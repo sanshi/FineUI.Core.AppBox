@@ -1,0 +1,129 @@
+/* FineUI 主题变量 - image_blue_sky */
+/* 由 generate-theme.js 自动生成，请勿手动修改 */
+
+:root {
+    /* 核心颜色 */
+    --f-content-border-color: #e6e6e6;
+    --f-content-background-color: #ffffff;
+    --f-content-text-color: #444444;
+    --f-header-border-color: #e6e6e6;
+    --f-header-background-color: #ffffff;
+    --f-header-text-color: #444444;
+    --f-default-border-color: #e6e6e6;
+    --f-default-background-color: #ffffff;
+    --f-default-text-color: #444444;
+    --f-hover-border-color: #76a6cb;
+    --f-hover-background-color: #edf6fd;
+    --f-hover-text-color: #00599f;
+    --f-active-border-color: #76a6cb;
+    --f-active-background-color: #e5eef5;
+    --f-active-text-color: #00599f;
+    --f-error-border-color: #ffa8a8;
+    --f-error-background-color: #fff8f8;
+    --f-error-text-color: #ff6c6c;
+    --f-border-radius: 6px;
+
+    /* 派生变量 */
+    --f-primary-background-color: #00599f;
+    --f-primary-text-color: #fff;
+    --f-tabstrip-inkbar-color: #00599f;
+    --f-focus-shadow-alpha: .15;
+    --f-focus-shadow-percent: 15%;
+    --f-index-header-border-color: #003e6f;
+    --f-index-header-background-color: #00355f;
+    --f-index-header-text-color: rgba(255, 255, 255, .9);
+    --f-index-hover-border-color: #76a6cb;
+    --f-index-hover-background-color: rgba(0, 89, 159, 0.4);
+    --f-index-hover-text-color: #fff;
+    --f-index-active-border-color: #76a6cb;
+    --f-index-active-background-color: rgba(0, 89, 159, 0.8);
+    --f-index-active-text-color: #fff;
+
+    /* 预计算颜色 */
+    --f-content-bg-darken-1: #fcfcfc;
+    --f-content-bg-darken-4: #f5f5f5;
+    --f-content-bg-darken-5: #f2f2f2;
+    --f-content-bg-darken-5-d20: #f2f2f2;
+    --f-content-bg-darken-10: #e6e6e6;
+    --f-content-bg-darken-30: #b3b3b3;
+    --f-content-bg-darken-35: #a6a6a6;
+    --f-content-bg-darken-40: #999999;
+    --f-content-border-lighten-5: #e7e7e7;
+    --f-content-border-lighten-15: #eaeaea;
+    --f-hover-bg-darken-5: #d7ebfb;
+    --f-active-bg-darken-5: #d4e3ee;
+    --f-default-bg-darken-15: #d9d9d9;
+    --f-primary-bg-dark: #00477f;
+    --f-primary-bg-hover: #004c87;
+    --f-checkbox-switch-color: #8f8f8f;
+
+    /* 条件分支覆盖 */
+    --f-active-checkbox-bg: #ffffff;
+    --f-active-checkbox-border: color-mix(in srgb, var(--f-content-text-color) 60%, transparent);
+    --f-active-checkbox-checked-bg: #00477f;
+    --f-active-checkbox-checked-border: #00477f;
+    --f-active-radio-bg: #00477f;
+    --f-active-radio-border: #00477f;
+    --f-active-switch-bg: #00477f;
+    --f-active-switch-border: #00477f;
+    --f-active-progressbar-bg: var(--f-content-bg-darken-10);
+    --f-active-progressbar-value-bg: #00477f;
+    --f-active-rate-color: #00477f;
+}
+
+/* 主题特有样式 */
+/* Pure 主题背景图片布局样式 */
+
+.mainpanel > .f-panel-bodyct > .f-panel-body {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.sidebarregion .f-widget-header {
+    background-color: transparent;
+}
+.sidebarregion .f-widget-header .f-state-hover {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+.sidebarregion .f-widget-header .f-state-focus {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+.sidebarregion .f-widget-header .f-state-active {
+	background-color: rgba(255, 255, 255, 0.4);
+}
+
+body.f-dark-top .leftregion .f-widget-header {
+    background-color: #fff;
+}
+body.f-dark-top .bodyregion .topregion .f-widget-header {
+    background-color: transparent;
+}
+body.f-dark-top .bodyregion .topregion .f-widget-header .f-state-hover {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+body.f-dark-top .bodyregion .topregion .f-widget-header .f-state-focus {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+body.f-dark-top .bodyregion .topregion .f-widget-header .f-state-active {
+	background-color: rgba(255, 255, 255, 0.4);
+}
+
+body.f-dark-top-left .bodyregion .topregion .f-widget-header {
+    background-color: transparent;
+}
+body.f-dark-top-left .bodyregion .topregion .f-widget-header .f-state-hover {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+body.f-dark-top-left .bodyregion .topregion .f-widget-header .f-state-focus {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+body.f-dark-top-left .bodyregion .topregion .f-widget-header .f-state-active {
+	background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* 背景图片 */
+.mainpanel {
+    background-image: url(./sky.jpg);
+    background-size: cover;
+    background-position: left bottom;
+    background-repeat: no-repeat;
+}

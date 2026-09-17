@@ -1,0 +1,133 @@
+﻿@page
+@model FineUI.Core.AppBox.Pages.Admin.UserNewModel
+@{
+    ViewData["Title"] = "UserNew";
+}
+
+@section body {
+    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" IsViewPort="true" BodyPadding="10" Layout="Fit">
+        <Toolbars>
+            <f:Toolbar ID="Toolbar1">
+                <Items>
+                    <f:Button ID="btnClose" Icon="SystemClose" Text="关闭" ClickHandler="onCloseActiveWindowClick"></f:Button>
+                    <f:ToolbarSeparator></f:ToolbarSeparator>
+                    <f:Button ID="btnSaveClose" _ValidateForms="SimpleForm1" Icon="SystemSaveClose" OnClick="btnSaveClose_Click" OnClickFields="SimpleForm1" Text="保存后关闭"></f:Button>
+                </Items>
+            </f:Toolbar>
+        </Toolbars>
+        <Items>
+            <f:Form ID="SimpleForm1" ShowBorder="true" ShowBorderShadow="true" ShowHeader="false" BodyPadding="10" AutoScroll="true">
+                <Rows>
+                    <f:FormRow>
+                        <Items>
+                            <f:TextBox For="CurrentUser.Name">
+                            </f:TextBox>
+                            <f:TextBox For="CurrentUser.ChineseName">
+                            </f:TextBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:RadioButtonList For="CurrentUser.Gender">
+                                <f:RadioItem Text="男" Value="男" />
+                                <f:RadioItem Text="女" Value="女" />
+                            </f:RadioButtonList>
+                            <f:CheckBox For="CurrentUser.Enabled">
+                            </f:CheckBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TextBox For="CurrentUser.Password" TextMode="Password">
+                            </f:TextBox>
+                            <f:Label></f:Label>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TextBox For="CurrentUser.Email" RegexPattern="EMAIL">
+                            </f:TextBox>
+                            <f:TextBox For="CurrentUser.CompanyEmail" RegexPattern="EMAIL">
+                            </f:TextBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TextBox For="CurrentUser.OfficePhone">
+                            </f:TextBox>
+                            <f:TextBox For="CurrentUser.OfficePhoneExt">
+                            </f:TextBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TextBox For="CurrentUser.HomePhone">
+                            </f:TextBox>
+                            <f:TextBox For="CurrentUser.CellPhone">
+                            </f:TextBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:DropDownBox ID="ddbRoles" Label="所属角色" AutoShowClearIcon="true" DataControlID="cblRoles" EnableMultiSelect="true" MultiSelectMode="Tags">
+                                <PopPanel>
+                                    <f:SimpleForm BodyPadding="10px" AutoScroll="true" ShowBorder="true" ShowHeader="false" Hidden="true">
+                                        <Items>
+                                            <f:CheckBoxList ID="cblRoles" ColumnNumber="3" DataTextField="Name" DataValueField="ID">
+                                            </f:CheckBoxList>
+                                        </Items>
+                                    </f:SimpleForm>
+                                </PopPanel>
+                            </f:DropDownBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:DropDownBox ID="ddbTitles" Label="拥有职称" AutoShowClearIcon="true" DataControlID="cblTitles" EnableMultiSelect="true" MultiSelectMode="Tags">
+                                <PopPanel>
+                                    <f:SimpleForm ID="SimpleForm3" BodyPadding="10px" AutoScroll="true" ShowBorder="true" ShowHeader="false" Hidden="true">
+                                        <Items>
+                                            <f:CheckBoxList ID="cblTitles" ColumnNumber="3" DataTextField="Name" DataValueField="ID">
+                                            </f:CheckBoxList>
+                                        </Items>
+                                    </f:SimpleForm>
+                                </PopPanel>
+                            </f:DropDownBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:DropDownBox ID="ddbDept" Label="所属部门" AutoShowClearIcon="true">
+                                <PopPanel>
+                                    <f:Grid ID="gridDept" ShowBorder="true" ShowHeader="false" Hidden="true" Width="550" ShowGridHeader="false"
+                                            DataIDField="ID" DataTextField="Name"
+                                            EnableTree="true" TreeColumn="Name" DataParentIDField="ParentID"
+                                            ExpandAllTreeNodes="true"
+                                            EnableRowLines="false" EnableAlternateRowColor="false">
+                                        <Columns>
+                                            <f:RenderField ColumnID="Name" DataField="Name" HeaderText="部门名称" ExpandUnusedSpace="true" />
+                                        </Columns>
+                                    </f:Grid>
+                                </PopPanel>
+                            </f:DropDownBox>
+                        </Items>
+                    </f:FormRow>
+                    <f:FormRow>
+                        <Items>
+                            <f:TextArea For="CurrentUser.Remark">
+                            </f:TextArea>
+                        </Items>
+                    </f:FormRow>
+                </Rows>
+            </f:Form>
+        </Items>
+    </f:Panel>
+
+}
+
+
+@section script {
+
+
+}
+

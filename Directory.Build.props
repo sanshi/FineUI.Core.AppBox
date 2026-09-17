@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <FineUIReleaseVersion>16.0.0-beta.1</FineUIReleaseVersion>
+    <Version>$(FineUIReleaseVersion)</Version>
+    <AssemblyVersion>16.0.0.0</AssemblyVersion>
+    <FileVersion>16.0.0.0</FileVersion>
+    <InformationalVersion>$(FineUIReleaseVersion)</InformationalVersion>
+    <FineUIPackageVersion Condition="'$(FineUIPackageVersion)' == ''">16.0.0-beta.1</FineUIPackageVersion>
+    <FineUIUseLocalSource Condition="'$(FineUIUseLocalSource)' == ''">false</FineUIUseLocalSource>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)FineUI.Enterprise.props"
+          Condition="Exists('$(MSBuildThisFileDirectory)FineUI.Enterprise.props')" />
+  <Import Project="$(MSBuildThisFileDirectory)Directory.Build.local.props"
+          Condition="Exists('$(MSBuildThisFileDirectory)Directory.Build.local.props')" />
+
+  <ItemGroup Condition="'$(FineUIUseLocalSource)' == 'true'">
+    <ProjectReference Include="$(FineUILocalProject)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(FineUIUseLocalSource)' != 'true'">
+    <PackageReference Include="FineUI.Core" Version="[$(FineUIPackageVersion)]" />
+  </ItemGroup>
+
+  <Target Name="ValidateFineUILocalSource"
+          BeforeTargets="PrepareForBuild"
+          Condition="'$(FineUIUseLocalSource)' == 'true' and !Exists('$(FineUILocalProject)')">
+    <Error Text="FineUI 本地源码项目不存在：$(FineUILocalProject)" />
+  </Target>
+</Project>

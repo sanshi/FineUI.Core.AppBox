@@ -1,0 +1,115 @@
+﻿@page
+@model FineUI.Core.AppBox.Pages.Admin.RoleUserNewModel
+@{
+    ViewData["Title"] = "RoleUserNew";
+}
+
+@section body {
+
+    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" IsViewPort="true" BodyPadding="10" Layout="VBox">
+        <Toolbars>
+            <f:Toolbar ID="Toolbar1">
+                <Items>
+                    <f:Button ID="btnClose" Icon="SystemClose" Text="关闭" ClickHandler="onCloseActiveWindowClick">
+                    </f:Button>
+                    <f:ToolbarSeparator></f:ToolbarSeparator>
+                    <f:Button ID="btnSaveClose" Icon="SystemSaveClose" Text="选择后关闭" OnClick="btnSaveClose_Click"></f:Button>
+                    <f:ToolbarFill></f:ToolbarFill>
+                    <f:TwinTriggerBox ID="ttbSearchMessage" ShowLabel="false" EmptyText="在用户名称中搜索" Trigger1Icon="Clear" Trigger2Icon="Search" ShowTrigger1="false"
+                                      OnTrigger1Click="ttbSearchMessage_Trigger1Click" OnTrigger2Click="ttbSearchMessage_Trigger2Click">
+                    </f:TwinTriggerBox>
+                </Items>
+            </f:Toolbar>
+        </Toolbars>
+        <Items>
+            <f:Panel ShowBorder="true" ShowBorderShadow="true" ShowHeader="false" BodyPadding="10" MarginBottom="10">
+                <Items>
+                    <f:Label ID="labSelectedUsers" EncodeText="false" CssStyle="margin:0;"></f:Label>
+                </Items>
+            </f:Panel>
+            <f:Grid ID="Grid1" BoxFlex="1" ShowBorder="true" ShowHeader="false" EnableCheckBoxSelect="true"
+                    DataIDField="ID" DataTextField="Name"
+                    AllowSorting="true" SortField="Name" SortDirection="DESC" OnSort="Grid1_Sort"
+                    AllowPaging="true" IsDatabasePaging="true" OnPageIndexChanged="Grid1_PageIndexChanged"
+                    ClearSelectionBeforePaging="false" ClearSelectionBeforeBinding="false" KeepCurrentSelection="true" KeepPagedSelection="true">
+                <Columns>
+                    <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
+                    <f:RenderField For="Users.First().Name" QuickSortField="true" Width="100"></f:RenderField>
+                    <f:RenderField For="Users.First().ChineseName" QuickSortField="true" Width="100" />
+                    <f:RenderCheckField For="Users.First().Enabled" QuickSortField="true" RenderAsStaticField="true" Width="80" />
+                    <f:RenderField For="Users.First().Gender" QuickSortField="true" Width="80" />
+                    <f:RenderField For="Users.First().Email" QuickSortField="true" Width="180" />
+                    <f:RenderField For="Users.First().Remark" ExpandUnusedSpace="true" />
+                </Columns>
+                <PageItems>
+                    <f:ToolbarText Text="每页记录数："></f:ToolbarText>
+                    <f:DropDownList ID="ddlGridPageSize" Width="80" OnSelectedIndexChanged="ddlGridPageSize_SelectedIndexChanged">
+                        <Items>
+                            <f:ListItem Text="10" Value="10"></f:ListItem>
+                            <f:ListItem Text="20" Value="20"></f:ListItem>
+                            <f:ListItem Text="50" Value="50"></f:ListItem>
+                            <f:ListItem Text="100" Value="100"></f:ListItem>
+                        </Items>
+                    </f:DropDownList>
+                </PageItems>
+                <Listeners>
+                    <f:Listener Event="dataload" Handler="onGrid1DataLoad"></f:Listener>
+                    <f:Listener Event="selectionchange" Handler="onGrid1SelectionChange"></f:Listener>
+                </Listeners>
+            </f:Grid>
+        </Items>
+    </f:Panel>
+
+    <f:HiddenField ID="hfRoleID"></f:HiddenField>
+}
+
+
+@section script {
+
+    <script>
+
+         // 缓存的行数据
+        var cachedRows = {};
+
+        function updateLabelResult() {
+            var selectedRowIds = F.ui.Grid1.getSelectedRows();
+
+            if (!selectedRowIds.length) {
+                F.ui.labSelectedUsers.setText('尚未选中任何用户');
+            } else {
+                var result = [];
+                $.each(selectedRowIds, function (index, item) {
+                    var rowId = item, rowData = cachedRows[rowId];
+
+                    var name = rowData.values['Name'];
+                    var chineseName = rowData.values['ChineseName'];
+
+                    result.push(`<strong>${F.htmlEncode(chineseName)}</strong>（${F.htmlEncode(name)}）`);
+                });
+                F.ui.labSelectedUsers.setText(`选中了 <strong>${result.length}</strong> 位用户：${result.join(', ')}`);
+            }
+        }
+
+        // 缓存当前页选中行的数据
+        function cacheCurrentPage() {
+            $.each(F.ui.Grid1.getSelectedRows(true), function (index, item) {
+                var rowId = item.id;
+                if (!cachedRows[rowId]) {
+                    cachedRows[rowId] = item;
+                }
+            });
+        }
+
+        function onGrid1SelectionChange(event) {
+            cacheCurrentPage();
+            updateLabelResult();
+        }
+
+        function onGrid1DataLoad(event) {
+            cacheCurrentPage();
+            updateLabelResult();
+        }
+
+    </script>
+
+}

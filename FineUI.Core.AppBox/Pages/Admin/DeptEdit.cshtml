@@ -1,0 +1,50 @@
+﻿@page
+@model FineUI.Core.AppBox.Pages.Admin.DeptEditModel
+@{
+    ViewData["Title"] = "DeptEdit";
+}
+
+@section body {
+
+    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" IsViewPort="true" BodyPadding="10" Layout="Fit">
+        <Toolbars>
+            <f:Toolbar ID="Toolbar1">
+                <Items>
+                    <f:Button ID="btnClose" Icon="SystemClose" Text="关闭" ClickHandler="onCloseActiveWindowClick">
+                    </f:Button>
+                    <f:ToolbarSeparator></f:ToolbarSeparator>
+                    <f:Button ID="btnSaveClose" _ValidateForms="SimpleForm1" Icon="SystemSaveClose" OnClick="btnSaveClose_Click" OnClickFields="SimpleForm1" Text="保存后关闭"></f:Button>
+                </Items>
+            </f:Toolbar>
+        </Toolbars>
+        <Items>
+            <f:SimpleForm ID="SimpleForm1" ShowBorder="true" ShowBorderShadow="true" ShowHeader="false" BodyPadding="10" AutoScroll="true">
+                <Items>
+                    <f:HiddenField For="Dept.ID"></f:HiddenField>
+                    <f:TextBox For="Dept.Name"></f:TextBox>
+                    <f:TextBox For="Dept.SortIndex"></f:TextBox>
+                    <f:DropDownBox ID="ddbParent" Label="上级部门" AutoShowClearIcon="true">
+                        <PopPanel>
+                            <f:Grid ID="Grid1" ShowBorder="true" ShowHeader="false" Hidden="true" Width="550" ShowGridHeader="false"
+                                    DataIDField="ID" DataTextField="Name"
+                                    EnableTree="true" TreeColumn="Name" DataParentIDField="ParentID" 
+                                    ExpandAllTreeNodes="true" DisableUnselectableRows="true"
+                                    EnableRowLines="false" EnableAlternateRowColor="false"
+                                    OnRowDataBound="Grid1_RowDataBound">
+                                <Columns>
+                                    <f:RenderField ColumnID="Name" DataField="Name" HeaderText="部门名称" ExpandUnusedSpace="true" />
+                                </Columns>
+                            </f:Grid>
+                        </PopPanel>
+                    </f:DropDownBox>
+                    <f:TextArea For="Dept.Remark"></f:TextArea>
+                </Items>
+            </f:SimpleForm>
+        </Items>
+    </f:Panel>
+
+}
+
+
+
+

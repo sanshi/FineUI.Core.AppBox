@@ -1,0 +1,46 @@
+# ===== 编译产物 =====
+# 写成 bin/* 而不是 bin/，否则下面的例外规则失效（git 不会进入被整体忽略的目录）
+# 前缀 ** 是必需的：中间带斜杠的模式会被锚定到仓库根，匹配不到子目录里的 bin
+**/[Bb]in/*
+**/[Oo]bj/
+
+# ===== NuGet 还原目录（由 packages.config / PackageReference 还原）=====
+/packages/
+
+# ===== Visual Studio 本地文件 =====
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.cache
+
+# ===== Windows 资源管理器垃圾文件 =====
+[Tt]humbs.db
+[Dd]esktop.ini
+
+# FineUI 本地源码覆盖
+Directory.Build.local.props
+.local/
+NuGet.Config
+
+# FineUI 公共仓库本地文件
+[Bb]in/
+[Oo]bj/
+target/
+[Pp]ackages/
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.iml
+*.nupkg
+*.snupkg
+*.mv.db
+*.trace.db
+Directory.Build.local.props
+NuGet.Config
+.local/
+FineUI*.lic*.config
+FineUI.Enterprise.props

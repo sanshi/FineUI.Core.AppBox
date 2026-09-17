@@ -1,0 +1,72 @@
+/* FineUI 主题变量 - custom_default */
+/* 由 generate-theme.js 自动生成，请勿手动修改 */
+
+:root {
+    /* 核心颜色 */
+    --f-content-border-color: #dddddd;
+    --f-content-background-color: #ffffff;
+    --f-content-text-color: #444444;
+    --f-header-border-color: #dddddd;
+    --f-header-background-color: #e6e6e6;
+    --f-header-text-color: #444444;
+    --f-default-border-color: #dddddd;
+    --f-default-background-color: #ffffff;
+    --f-default-text-color: #444444;
+    --f-hover-border-color: #40a9ff;
+    --f-hover-background-color: #f6f6f6;
+    --f-hover-text-color: #40a9ff;
+    --f-active-border-color: #1890ff;
+    --f-active-background-color: #e6f7ff;
+    --f-active-text-color: #1890ff;
+    --f-error-border-color: #ffa8a8;
+    --f-error-background-color: #fff8f8;
+    --f-error-text-color: #ff6c6c;
+    --f-border-radius: 6px;
+
+    /* 派生变量 */
+    --f-primary-background-color: #1890ff;
+    --f-primary-text-color: #ffffff;
+    --f-tabstrip-inkbar-color: #1890ff;
+    --f-focus-shadow-alpha: .15;
+    --f-focus-shadow-percent: 15%;
+    --f-index-header-border-color: #dddddd;
+    --f-index-header-background-color: #e6e6e6;
+    --f-index-header-text-color: #444444;
+    --f-index-hover-border-color: #40a9ff;
+    --f-index-hover-background-color: #f6f6f6;
+    --f-index-hover-text-color: #40a9ff;
+    --f-index-active-border-color: #1890ff;
+    --f-index-active-background-color: #e6f7ff;
+    --f-index-active-text-color: #1890ff;
+
+    /* 预计算颜色 */
+    --f-content-bg-darken-1: #fcfcfc;
+    --f-content-bg-darken-4: #f5f5f5;
+    --f-content-bg-darken-5: #f2f2f2;
+    --f-content-bg-darken-5-d20: #f2f2f2;
+    --f-content-bg-darken-10: #e6e6e6;
+    --f-content-bg-darken-30: #b3b3b3;
+    --f-content-bg-darken-35: #a6a6a6;
+    --f-content-bg-darken-40: #999999;
+    --f-content-border-lighten-5: #dfdfdf;
+    --f-content-border-lighten-15: #e2e2e2;
+    --f-hover-bg-darken-5: #eaeaea;
+    --f-active-bg-darken-5: #ceefff;
+    --f-default-bg-darken-15: #d9d9d9;
+    --f-primary-bg-dark: #0074df;
+    --f-primary-bg-hover: #007bed;
+    --f-checkbox-switch-color: #8f8f8f;
+
+    /* 条件分支覆盖 */
+    --f-active-checkbox-bg: #ffffff;
+    --f-active-checkbox-border: color-mix(in srgb, var(--f-content-text-color) 60%, transparent);
+    --f-active-checkbox-checked-bg: #0074df;
+    --f-active-checkbox-checked-border: #0074df;
+    --f-active-radio-bg: #0074df;
+    --f-active-radio-border: #0074df;
+    --f-active-switch-bg: #0074df;
+    --f-active-switch-border: #0074df;
+    --f-active-progressbar-bg: var(--f-content-bg-darken-10);
+    --f-active-progressbar-value-bg: #0074df;
+    --f-active-rate-color: #0074df;
+}

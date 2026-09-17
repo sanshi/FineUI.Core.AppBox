@@ -1,0 +1,120 @@
+@page
+@model FineUI.Core.AppBox.Pages.IndexModel
+
+@{
+    var F = Html.F();
+}
+
+@section head {
+
+    <link href="~/res/css/index.css" rel="stylesheet" />
+    <link href="~/res/css/mobileview.css" rel="stylesheet" />
+}
+
+@section body {
+
+    <f:Panel ID="mainPanel" Layout="Region" CssClass="mainpanel" ShowBorder="false" ShowHeader="false" IsViewPort="true">
+        <Items>
+            <f:Panel ID="sidebarRegion" CssClass="sidebarregion" ShowBorder="false" Width="260" ShowHeader="false"
+                     EnableCollapse="false" Collapsed="false" Layout="VBox"
+                     RegionPosition="Left" RegionSplit="true" RegionSplitIcon="false" RegionSplitWidth="3" RegionSplitTransparent="true">
+                <Items>
+                    <f:ContentPanel ID="sideheaderTopPanel" CssClass="topregion" ShowBorder="false" ShowHeader="false">
+                        <div id="sideheader" class="f-widget-header f-mainheader">
+                            <a class="logo" href="@Url.Content("~/")" title="FineUI.Core.AppBox">FineUI.Core.AppBox</a>
+                            <div class="logo-subtitle">EFCore</div>
+                        </div>
+                    </f:ContentPanel>
+                    <f:Panel ID="leftPanel" CssClass="leftregion" BoxFlex="1" ShowBorder="false" ShowHeader="false" Layout="Fit">
+                        <Items>
+                            <f:Tree ID="treeMenu" ShowBorder="false" ShowHeader="false" EnableSingleClickExpand="true" 
+                                    HideHScrollbar="true" HideVScrollbar="true" ExpanderToRight="true" HeaderStyle="true" AllHeaderStyle="true"></f:Tree>
+                        </Items>
+                    </f:Panel>
+                </Items>
+                <Listeners>
+                    <f:Listener Event="splitdrag" Handler="onSidebarSplitDrag" />
+                </Listeners>
+            </f:Panel>
+            <f:Panel ID="bodyRegion" CssClass="bodyregion" RegionPosition="Center" ShowBorder="false" ShowHeader="false" Layout="VBox">
+                <Items>
+                    <f:ContentPanel ID="topPanel" CssClass="topregion" ShowBorder="false" ShowHeader="false">
+                        <div id="header" class="f-widget-header f-mainheader">
+                            <div class="header-left">
+                                <f:Button ID="btnCollapseSidebar" CssClass="icononlyaction" ToolTip="折叠/展开侧边栏" IconAlign="Top" IconFont="_Fold" EnableDefaultState="false" TabIndex="-1">
+                                    <Listeners>
+                                        <f:Listener Event="click" Handler="onFoldClick" />
+                                    </Listeners>
+                                </f:Button>
+                            </div>
+                            <div class="header-right">
+                                <f:Button CssClass="icontopaction" ID="Button1" Text="下载源码" IconAlign="Top" IconFont="_Download" EnableDefaultState="false" EnableDefaultCorner="false">
+                                    <Listeners>
+                                        <f:Listener Event="click" Handler="onDownloadClick"></f:Listener>
+                                    </Listeners>
+                                </f:Button>
+                                <f:Button ID="btnSystemHelp" Text="系统帮助" CssClass="icontopaction" MenuID="helpMenu" IconAlign="Top" IconFont="_Question" EnableDefaultState="false" EnableDefaultCorner="false" ShowMenuIcon="false">
+                                </f:Button>
+                                <f:Button CssClass="icontopaction" ID="btnThemeSelect" Text="主题仓库" IconAlign="Top" IconFont="_Skin" EnableDefaultState="false" EnableDefaultCorner="false" TabIndex="-1">
+                                    <Listeners>
+                                        <f:Listener Event="click" Handler="onThemeSelectClick" />
+                                    </Listeners>
+                                </f:Button>
+                                <f:Button ID="btnUserName" CssClass="userpicaction" IconUrl="@Url.Content("~/res/images/my_face_80.jpg")" IconAlign="Left"
+                                          ShowMenuIcon="true" EnableDefaultState="false" EnableDefaultCorner="false">
+                                    <Menu>
+                                        <f:MenuButton ID="btnSignOut" Text="安全退出" IconFont="_SignOut" ConfirmText="确定退出系统？" OnClick="btnSignOut_Click">
+                                        </f:MenuButton>
+                                    </Menu>
+                                </f:Button>
+                            </div>
+                        </div>
+                    </f:ContentPanel>
+                    <f:TabStrip ID="mainTabStrip" CssClass="centerregion" ShowInkBar="true" InkBarPosition="Bottom" BoxFlex="1" ShowBorder="true" EnableTabCloseMenu="true">
+                        <Tabs>
+                            <f:Tab ID="tabHomepage" Title="首页" IconFont="_Home" EnableIFrame="true" IFrameUrl="@Url.Content("~/Admin/Index")">
+                            </f:Tab>
+                        </Tabs>
+                        <Tools>
+                            <f:Tool IconFont="_Refresh" CssClass="tabtool" ToolTip="刷新" ID="toolRefresh">
+                                <Listeners>
+                                    <f:Listener Event="click" Handler="onToolRefreshClick"></f:Listener>
+                                </Listeners>
+                            </f:Tool>
+                            <f:Tool IconFont="_Maximize" CssClass="tabtool" ToolTip="最大化" ID="toolMaximize">
+                                <Listeners>
+                                    <f:Listener Event="click" Handler="onToolMaximizeClick"></f:Listener>
+                                </Listeners>
+                            </f:Tool>
+                        </Tools>
+                    </f:TabStrip>
+                </Items>
+            </f:Panel>
+        </Items>
+    </f:Panel>
+
+    <f:Window ID="windowThemeRoller" Title="主题仓库" Hidden="true" EnableIFrame="true" IFrameUrl="@Url.Content("~/Themes")" ClearIFrameAfterClose="false"
+              IsModal="true" Width="850" Height="600" EnableClose="true" EnableMaximize="true" EnableResize="true" WindowPosition="Center">
+    </f:Window>
+
+}
+
+@section script {
+
+    <script>
+        var PARAMS = {
+            mainPanel: 'mainPanel',
+            mainTabStrip: 'mainTabStrip',
+            treeMenu: 'treeMenu',
+            sidebarRegion: 'sidebarRegion',
+            topPanel: 'topPanel',
+            btnCollapseSidebar: 'btnCollapseSidebar',
+            tabHomepage: 'tabHomepage',
+            windowThemeRoller: 'windowThemeRoller'
+        };
+    </script>
+
+    <script src="~/res/js/index.js"></script>
+    <script src="~/res/js/mobileview.js"></script>
+
+}

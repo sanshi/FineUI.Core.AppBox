@@ -1,0 +1,52 @@
+﻿@page
+@model FineUI.Core.AppBox.Pages.Public.NoticeModel
+@{
+    ViewData["Title"] = "Notice";
+}
+
+@section body {
+
+    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" Layout="VBox" BoxConfigSpace="10" IsViewPort="true" Margin="20">
+        <Items>
+            <f:Form ShowBorder="true" ShowBorderShadow="true" BodyPadding="10" RemoveLastFieldsMargin="true" ShowHeader="false">
+                <Rows>
+                    <f:FormRow>
+                        <Items>
+                            <f:TwinTriggerBox ID="ttbSearchTitle" ShowLabel="false" EmptyText="在公告标题中搜索" Trigger1Icon="Clear" Trigger2Icon="Search" ShowTrigger1="false"
+                                              OnTrigger1Click="ttbSearchTitle_Trigger1Click" OnTrigger2Click="ttbSearchTitle_Trigger2Click">
+                            </f:TwinTriggerBox>
+                            <f:Label ID="labSignedIn" ShowLabel="false" CssStyle="color:#888;text-align:right;"></f:Label>
+                        </Items>
+                    </f:FormRow>
+                </Rows>
+            </f:Form>
+            <f:Grid ID="Grid1" BoxFlex="1" ShowBorder="true" ShowBorderShadow="true" Title="通知公告" ShowHeader="true" EnableCheckBoxSelect="false"
+                    DataIDField="ID" DataTextField="Title" AllowPaging="true" PageSize="5" IsDatabasePaging="true"
+                    OnPageIndexChanged="Grid1_PageIndexChanged">
+                <Columns>
+                    <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
+                    <f:RenderField For="Notices.First().Title" ExpandUnusedSpace="true"></f:RenderField>
+                    <f:RenderField For="Notices.First().Department" Width="120"></f:RenderField>
+                    <f:RenderField For="Notices.First().PublishTime" FieldType="Date" Renderer="Date" RendererArgument="yyyy-MM-dd HH:mm" Width="150"></f:RenderField>
+                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="60">
+                        <Commands>
+                            <f:Command CommandName="View" Icon="Find" ToolTip="查看全文"
+                                       WindowID="Window1" WindowTitle="公告详情"
+                                       WindowIFrameUrlFormatString="@Url.Content("~/Public/NoticeDetail?id={0}")" _WindowIFrameUrlFields="ID" />
+                        </Commands>
+                    </f:RenderField>
+                </Columns>
+            </f:Grid>
+        </Items>
+    </f:Panel>
+
+    <f:Window ID="Window1" IsModal="true" Hidden="true" Target="Top" EnableResize="true"
+              EnableMaximize="true" EnableIFrame="true" Width="760" Height="520">
+    </f:Window>
+
+}
+
+
+@section script {
+
+}

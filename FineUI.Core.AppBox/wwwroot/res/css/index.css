@@ -1,0 +1,132 @@
+﻿
+
+#sideheader {
+    height: 58px;
+    text-align: center;
+    overflow: hidden;
+}
+
+    #sideheader .logo {
+        font-size: 24px;
+        text-decoration: none;
+        line-height: 58px;
+    }
+
+#header {
+    height: 58px;
+}
+
+    #header .header-left {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0;
+    }
+
+    #header .header-right {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 10px;
+    }
+
+    #header .f-btn {
+        border-width: 0;
+    }
+
+    #header .icononlyaction {
+        padding: 10px;
+        border-radius: 50%;
+    }
+
+        #header .icononlyaction .f-btn-icon {
+            font-size: 18px;
+            line-height: 28px;
+            height: 28px;
+            width: 28px;
+        }
+
+
+    #header .icontopaction {
+        border-radius: 24px;
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+        #header .icontopaction .f-btn-icon {
+            width: 18px;
+            font-size: 18px;
+            line-height: 18px;
+            height: 18px;
+        }
+
+        #header .icontopaction .f-btn-text {
+            font-size: 12px;
+            line-height: 16px;
+            margin-top: 4px;
+        }
+
+    #header .userpicaction {
+        border-radius: 24px;
+        padding: 7px 10px;
+    }
+
+        #header .userpicaction .f-btn-icon {
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            margin: 0;
+        }
+
+        #header .userpicaction .f-btn-text {
+            margin-left: 8px;
+            font-size: 14px;
+            line-height: 34px;
+        }
+
+    #header .btn-apply-trial .f-badge {
+        top: 15px;
+        right: 10px;
+    }
+
+
+    #header .header-right > .f-inline-block,
+    #header .header-left > .f-inline-block {
+        vertical-align: top;
+    }
+
+
+
+ul.list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+    ul.list li {
+        margin-bottom: 5px;
+    }
+
+
+
+/* Special - Index Page */
+.logo-subtitle {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 12px;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.leftregion .f-tree-cell-inner {
+    cursor: pointer;
+}
+
+
+.sidebarregion .f-tree-minimode-list .f-tree-minimode-text {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85em;
+}
+

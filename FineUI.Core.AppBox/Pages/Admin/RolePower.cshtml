@@ -1,0 +1,185 @@
+﻿@page
+@model FineUI.Core.AppBox.Pages.Admin.RolePowerModel
+@{
+    ViewData["Title"] = "RolePower";
+
+}
+
+@section head {
+
+    <style>
+        ul.powers {
+            margin: 0;
+            padding: 0;
+        }
+
+            ul.powers li {
+                margin: 5px 15px 5px 0;
+                display: inline-block;
+                min-width: 150px;
+            }
+
+                ul.powers li input {
+                    vertical-align: middle;
+                }
+
+                ul.powers li label {
+                    margin-left: 5px;
+                }
+
+        /* 自动换行，权限复选框列表过长 */
+        .f-grid-row .f-grid-cell-text {
+            white-space: normal;
+        }
+    </style>
+
+}
+
+@section body {
+
+    <f:RegionPanel ID="RegionPanel1" ShowBorder="false" IsViewPort="true" Margin="20">
+        <Regions>
+            <f:Region ID="Region1" ShowBorder="false" ShowHeader="false" Width="260" RegionPosition="Left" RegionSplit="true" RegionSplitIcon="false" RegionSplitWidth="10" Layout="Fit">
+                <Items>
+                    <f:Grid ID="Grid1" ShowBorder="true" ShowBorderShadow="true" ShowHeader="false" EnableCheckBoxSelect="false" EnableMultiSelect="false"
+                            DataIDField="ID" DataTextField="Name"
+                            AllowSorting="true" SortField="Name" SortDirection="DESC" OnSort="Grid1_Sort"
+                            OnRowClick="Grid1_RowClick">
+                        <Columns>
+                            <f:RowNumberField></f:RowNumberField>
+                            <f:RenderField For="Roles.First().Name" QuickSortField="true" ExpandUnusedSpace="true"></f:RenderField>
+                        </Columns>
+                    </f:Grid>
+                </Items>
+            </f:Region>
+            <f:Region ID="Region2" ShowBorder="false" ShowHeader="false" RegionPosition="Center" Layout="Fit">
+                <Items>
+                    <f:Grid ID="Grid2" BoxFlex="1" ShowBorder="true" ShowBorderShadow="true" ShowHeader="false" AllowSorting="true"
+                            SortField="GroupName" SortDirection="DESC" OnSort="Grid2_Sort">
+                        <Listeners>
+                            <f:Listener Event="beforerowcontextmenu" Handler="onGrid2Contextmenu"></f:Listener>
+                        </Listeners>
+                        <Toolbars>
+                            <f:Toolbar ID="Toolbar1">
+                                <Items>
+                                    <f:Button ID="btnSelectAll" Text="全选">
+                                        <Listeners>
+                                            <f:Listener Event="click" Handler="selectPowerCheckboxs(true);"></f:Listener>
+                                        </Listeners>
+                                    </f:Button>
+                                    <f:Button ID="btnUnselectAll" Text="反选">
+                                        <Listeners>
+                                            <f:Listener Event="click" Handler="selectPowerCheckboxs(false);"></f:Listener>
+                                        </Listeners>
+                                    </f:Button>
+                                    <f:ToolbarSeparator></f:ToolbarSeparator>
+                                    <f:Button ID="btnGroupUpdate" ButtonColor="Primary" Icon="GroupEdit" Text="更新当前角色权限">
+                                        <Listeners>
+                                            <f:Listener Event="click" Handler="savePowers"></f:Listener>
+                                        </Listeners>
+                                    </f:Button>
+                                </Items>
+                            </f:Toolbar>
+                        </Toolbars>
+                        <Columns>
+                            <f:RowNumberField></f:RowNumberField>
+                            <f:RenderField For="GroupPowers.First().GroupName" QuickSortField="true" Width="120"></f:RenderField>
+                            <f:RenderField For="GroupPowers.First().Powers" ExpandUnusedSpace="true" RendererFunction="renderPowers"></f:RenderField>
+                        </Columns>
+                    </f:Grid>
+                </Items>
+            </f:Region>
+        </Regions>
+    </f:RegionPanel>
+
+    <f:Menu ID="Menu2">
+        <Items>
+            <f:MenuButton ID="menuSelectRows" Text="全选行">
+                <Listeners>
+                    <f:Listener Event="click" Handler="selectPowerCheckboxs(true);"></f:Listener>
+                </Listeners>
+            </f:MenuButton>
+            <f:MenuButton ID="menuUnSelectRows" Text="取消行">
+                <Listeners>
+                    <f:Listener Event="click" Handler="selectPowerCheckboxs(false);"></f:Listener>
+                </Listeners>
+            </f:MenuButton>
+        </Items>
+    </f:Menu>
+
+}
+
+
+@section script {
+
+    <script>
+
+        var checkboxSelector = '.powers input[type=checkbox]',
+            selectedRowSelector = '.f-grid-row-selected',
+            selectedRowCheckboxSelector = selectedRowSelector + ' ' + checkboxSelector;
+
+        function onGrid2Contextmenu(event, rowId, rowIndex) {
+            F.ui.Menu2.show();
+            return false;
+        }
+
+        function renderPowers(value, params) {
+            var html = ['<ul class="powers">'];
+            $.each(value, function (index, item) {
+                var itemId = 'power_checkbox_' + item.id;
+                // 权限名/标题是可编辑数据，拼进 HTML 前编码
+                var itemHtml = F.formatString('<li><span data-qtip="{0}">', F.htmlEncode(item.name));
+                itemHtml += F.formatString('<input id="{0}" type="checkbox" value="{1}">', itemId, parseInt(item.id, 10));
+                itemHtml += F.formatString('<label for="{0}">{1}</label>', itemId, F.htmlEncode(item.title));
+                itemHtml += '</span></li>';
+                html.push(itemHtml);
+            });
+            html.push('</ul>');
+            return html.join('');
+        }
+
+        function getAllCheckboxEls() {
+            return F.ui.Grid2.el.find(checkboxSelector);
+        }
+
+        function selectPowerCheckboxs(checked) {
+            var selectedRows = F.ui.Grid2.el.find(selectedRowSelector);
+            if (selectedRows.length) {
+                F.ui.Grid2.el.find(selectedRowCheckboxSelector).prop('checked', checked);
+            } else {
+                F.ui.Grid2.el.find(checkboxSelector).prop('checked', checked);
+            }
+        }
+
+
+        function updateRolePowers(powerIds) {
+            getAllCheckboxEls().each(function () {
+                var checkboxEl = $(this), checkboxValue = parseInt(checkboxEl.val(), 10);
+                if ($.inArray(checkboxValue, powerIds) >= 0) {
+                    checkboxEl.prop('checked', true);
+                } else {
+                    checkboxEl.prop('checked', false);
+                }
+            });
+        }
+
+
+        function savePowers() {
+            var selectedPowerIDs = [];
+            getAllCheckboxEls().each(function () {
+                var checkboxEl = $(this), checkboxValue = parseInt(checkboxEl.val(), 10);
+                if (checkboxEl.prop('checked')) {
+                    selectedPowerIDs.push(checkboxValue);
+                }
+            });
+
+
+            // 触发后台事件
+            F.customEvent('Grid2_SavePowers', {
+                powerIDs: selectedPowerIDs
+            });
+        }
+
+    </script>
+}
+

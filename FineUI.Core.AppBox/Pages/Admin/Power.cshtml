@@ -1,0 +1,81 @@
+﻿@page
+@model FineUI.Core.AppBox.Pages.Admin.PowerModel
+@{
+    ViewData["Title"] = "Power";
+}
+
+@section body {
+
+    <f:Panel ID="Panel1" ShowBorder="false" ShowHeader="false" Layout="VBox" BoxConfigSpace="10" Title="权限管理" IsViewPort="true" Margin="20">
+        <Items>
+            <f:Form ShowBorder="true" ShowBorderShadow="true" BodyPadding="10" RemoveLastFieldsMargin="true" ShowHeader="false">
+                <Rows>
+                    <f:FormRow>
+                        <Items>
+                            <f:TwinTriggerBox ID="ttbSearchMessage" ShowLabel="false" EmptyText="在权限名称中搜索" Trigger1Icon="Clear" Trigger2Icon="Search" ShowTrigger1="false"
+                                              OnTrigger1Click="ttbSearchMessage_Trigger1Click" OnTrigger2Click="ttbSearchMessage_Trigger2Click">
+                            </f:TwinTriggerBox>
+                            <f:Label></f:Label>
+                        </Items>
+                    </f:FormRow>
+                </Rows>
+            </f:Form>
+            <f:Grid ID="Grid1" BoxFlex="1" ShowBorder="true" ShowBorderShadow="true" ShowHeader="false" EnableCheckBoxSelect="false"
+                    DataIDField="ID" DataTextField="Name"
+                    AllowSorting="true" SortField="GroupName" SortDirection="DESC" OnSort="Grid1_Sort"
+                    AllowPaging="true" IsDatabasePaging="true" OnPageIndexChanged="Grid1_PageIndexChanged"
+                    OnRowCommand="Grid1_RowCommand">
+                <Columns>
+                    <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
+                    <f:RenderField For="Powers.First().GroupName" QuickSortField="true" Width="120"></f:RenderField>
+                    <f:RenderField For="Powers.First().Name" QuickSortField="true" Width="180"></f:RenderField>
+                    <f:RenderField For="Powers.First().Title" QuickSortField="true" Width="180"></f:RenderField>
+                    <f:RenderField For="Powers.First().Remark" QuickSortField="true" ExpandUnusedSpace="true"></f:RenderField>
+                    <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="100">
+                        <Commands>
+                            <f:Command CommandName="Edit" Icon="Pencil" ToolTip="编辑"
+                                       WindowID="Window1" WindowTitle="编辑"
+                                       WindowIFrameUrlFormatString="@Url.Content("~/Admin/PowerEdit?id={0}")" _WindowIFrameUrlFields="ID" />
+                            <f:Command CommandName="Delete" Icon="Delete" ToolTip="删除" CssClass="mybtn3" ConfirmText="确定删除此记录？" ConfirmTarget="Top" />
+                        </Commands>
+                    </f:RenderField>
+                </Columns>
+                <PageItems>
+                    <f:ToolbarText Text="每页记录数："></f:ToolbarText>
+                    <f:DropDownList ID="ddlGridPageSize" Width="80" OnSelectedIndexChanged="ddlGridPageSize_SelectedIndexChanged">
+                        <Items>
+                            <f:ListItem Text="10" Value="10"></f:ListItem>
+                            <f:ListItem Text="20" Value="20"></f:ListItem>
+                            <f:ListItem Text="50" Value="50"></f:ListItem>
+                            <f:ListItem Text="100" Value="100"></f:ListItem>
+                        </Items>
+                    </f:DropDownList>
+                </PageItems>
+                <Toolbars>
+                    <f:Toolbar ID="Toolbar1" Position="Top">
+                        <Items>
+                            <f:ToolbarFill></f:ToolbarFill>
+                            <f:Button ID="btnNew" Icon="Add" Text="新增权限" ClickHandler="onNewClick">
+                            </f:Button>
+                        </Items>
+                    </f:Toolbar>
+                </Toolbars>
+            </f:Grid>
+        </Items>
+    </f:Panel>
+
+    <f:Window ID="Window1" IsModal="true" Hidden="true" Target="Top" EnableResize="true"
+              EnableMaximize="true" EnableIFrame="true" Width="900" Height="650" OnClose="Window1_Close">
+    </f:Window>
+
+}
+
+
+@section script {
+    <script>
+        function onNewClick(event) {
+            F.ui.Window1.show('@Url.Content("~/Admin/PowerNew")', '新增权限');
+        }
+    </script>
+}
+

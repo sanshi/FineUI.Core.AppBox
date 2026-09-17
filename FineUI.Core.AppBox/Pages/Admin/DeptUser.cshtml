@@ -1,0 +1,132 @@
+﻿@page
+@model FineUI.Core.AppBox.Pages.Admin.DeptUserModel
+@{
+    ViewData["Title"] = "DeptUser";
+}
+
+
+@section body {
+
+    <f:RegionPanel ID="RegionPanel1" ShowBorder="false" IsViewPort="true" Margin="20">
+        <Regions>
+            <f:Region ID="Region1" ShowBorder="true" ShowBorderShadow="true" ShowHeader="false" Width="260" RegionPosition="Left" RegionSplit="true" RegionSplitIcon="false" RegionSplitWidth="10" Layout="Fit">
+                <Items>
+                    <f:Grid ID="Grid1" ShowBorder="true" ShowHeader="false" EnableCheckBoxSelect="false"
+                            DataIDField="ID" DataTextField="Name"
+                            EnableMultiSelect="false" OnRowClick="Grid1_RowClick"
+                            EnableTree="true" TreeColumn="Name" DataParentIDField="ParentID" ExpandAllTreeNodes="true">
+                        <Columns>
+                            <f:RowNumberField EnableTreeNumber="true"></f:RowNumberField>
+                            <f:RenderField For="Depts.First().Name" SortField="Name" ExpandUnusedSpace="true"></f:RenderField>
+                        </Columns>
+                    </f:Grid>
+                </Items>
+            </f:Region>
+            <f:Region ID="Region2" ShowBorder="false" ShowHeader="false" RegionPosition="Center" Layout="VBox" BoxConfigSpace="10">
+                <Items>
+                    <f:Form ShowBorder="true" ShowBorderShadow="true" BodyPadding="10" RemoveLastFieldsMargin="true" ShowHeader="false" LabelAlign="Right">
+                        <Rows>
+                            <f:FormRow>
+                                <Items>
+                                    <f:TwinTriggerBox ID="ttbSearchMessage" ShowLabel="false" EmptyText="在用户名称中搜索" Trigger1Icon="Clear" Trigger2Icon="Search" ShowTrigger1="false"
+                                                      OnTrigger1Click="ttbSearchMessage_Trigger1Click" OnTrigger2Click="ttbSearchMessage_Trigger2Click">
+                                    </f:TwinTriggerBox>
+                                    <f:Label></f:Label>
+                                </Items>
+                            </f:FormRow>
+                        </Rows>
+                    </f:Form>
+                    <f:Grid ID="Grid2" BoxFlex="1" ShowBorder="true" ShowBorderShadow="true" ShowHeader="false" EnableCheckBoxSelect="true"
+                            DataIDField="ID" DataTextField="Name"
+                            AllowSorting="true" SortField="Name" SortDirection="DESC" OnSort="Grid2_Sort"
+                            AllowPaging="true" IsDatabasePaging="true" OnPageIndexChanged="Grid2_PageIndexChanged"
+                            OnRowCommand="Grid2_RowCommand">
+                        <Toolbars>
+                            <f:Toolbar ID="Toolbar1">
+                                <Items>
+                                    <f:Button ID="btnDeleteSelected" Icon="Delete" Text="从当前部门移除选中的用户" ClickHandler="onDeleteSelectedClick">
+                                    </f:Button>
+                                    <f:ToolbarFill></f:ToolbarFill>
+                                    <f:Button ID="btnNew" Icon="Add" Text="添加用户到当前部门" ClickHandler="onNewClick">
+                                    </f:Button>
+                                </Items>
+                            </f:Toolbar>
+                        </Toolbars>
+                        <PageItems>
+                            <f:ToolbarText Text="每页记录数："></f:ToolbarText>
+                            <f:DropDownList ID="ddlGridPageSize" Width="80" OnSelectedIndexChanged="ddlGridPageSize_SelectedIndexChanged">
+                                <Items>
+                                    <f:ListItem Text="10" Value="10"></f:ListItem>
+                                    <f:ListItem Text="20" Value="20"></f:ListItem>
+                                    <f:ListItem Text="50" Value="50"></f:ListItem>
+                                    <f:ListItem Text="100" Value="100"></f:ListItem>
+                                </Items>
+                            </f:DropDownList>
+                        </PageItems>
+                        <Columns>
+                            <f:RowNumberField EnablePagingNumber="true"></f:RowNumberField>
+                            <f:RenderField For="Users.First().Name" QuickSortField="true" Width="100"></f:RenderField>
+                            <f:RenderField For="Users.First().ChineseName" QuickSortField="true" Width="100" />
+                            <f:RenderCheckField For="Users.First().Enabled" QuickSortField="true" RenderAsStaticField="true" Width="80" />
+                            <f:RenderField For="Users.First().Gender" QuickSortField="true" Width="80" />
+                            <f:RenderField For="Users.First().Email" QuickSortField="true" Width="180" />
+                            <f:RenderField For="Users.First().Remark" ExpandUnusedSpace="true" />
+                            <f:RenderField EnableColumnHide="false" EnableHeaderMenu="false" Width="100">
+                                <Commands>
+                                    <f:Command CommandName="View" Icon="Information" ToolTip="查看用户信息"
+                                               WindowID="Window1" WindowTitle="查看用户信息"
+                                               WindowIFrameUrlFormatString="@Url.Content("~/Admin/UserView?id={0}")" _WindowIFrameUrlFields="ID" />
+                                    <f:Command CommandName="Delete" Icon="Delete" ToolTip="删除" CssClass="mybtn3" ConfirmText="确定删除此记录？" ConfirmTarget="Top" />
+                                </Commands>
+                            </f:RenderField>
+                        </Columns>
+                    </f:Grid>
+                </Items>
+            </f:Region>
+        </Regions>
+    </f:RegionPanel>
+
+    <f:Window ID="Window1" IsModal="true" Hidden="true" Target="Top" EnableResize="true" EnableMaximize="true" EnableIFrame="true"
+              Width="900" Height="650" OnClose="Window1_Close">
+    </f:Window>
+
+}
+
+
+@section script {
+
+    <script>
+
+        function onNewClick(event) {
+            var selectedRowData = F.ui.Grid1.getSelectedRow(true);
+            var url = '@Url.Content("~/Admin/DeptUserNew?deptID=")' + selectedRowData.id;
+            F.ui.Window1.show(url, '添加用户到当前部门（' + selectedRowData.text  + '）');
+        }
+
+
+
+        function onDeleteSelectedClick(event) {
+            var grid2 = F.ui.Grid2;
+
+            if (!grid2.hasSelection()) {
+                F.alert('请至少选择一项！');
+                return;
+            }
+
+            var selectedRows = grid2.getSelectedRows();
+            F.confirm({
+                message: F.rawHtml('你确定要删除选中的&nbsp;<b>{0}</b>&nbsp;行数据吗？', selectedRows.length),
+                target: '_top',
+                ok: function () {
+                    // 触发后台事件
+                    F.customEvent('Grid2_DeleteRows', {
+                        rowIDs: selectedRows
+                    });
+                }
+            });
+        }
+
+
+    </script>
+}
+

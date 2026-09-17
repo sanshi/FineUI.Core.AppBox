@@ -1,0 +1,55 @@
+/* Pure 主题背景图片布局样式 */
+
+.mainpanel > .f-panel-bodyct > .f-panel-body {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.sidebarregion .f-widget-header {
+    background-color: transparent;
+}
+.sidebarregion .f-widget-header .f-state-hover {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+.sidebarregion .f-widget-header .f-state-focus {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+.sidebarregion .f-widget-header .f-state-active {
+	background-color: rgba(255, 255, 255, 0.4);
+}
+
+body.f-dark-top .leftregion .f-widget-header {
+    background-color: #fff;
+}
+body.f-dark-top .bodyregion .topregion .f-widget-header {
+    background-color: transparent;
+}
+body.f-dark-top .bodyregion .topregion .f-widget-header .f-state-hover {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+body.f-dark-top .bodyregion .topregion .f-widget-header .f-state-focus {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+body.f-dark-top .bodyregion .topregion .f-widget-header .f-state-active {
+	background-color: rgba(255, 255, 255, 0.4);
+}
+
+body.f-dark-top-left .bodyregion .topregion .f-widget-header {
+    background-color: transparent;
+}
+body.f-dark-top-left .bodyregion .topregion .f-widget-header .f-state-hover {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+body.f-dark-top-left .bodyregion .topregion .f-widget-header .f-state-focus {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+body.f-dark-top-left .bodyregion .topregion .f-widget-header .f-state-active {
+	background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* 背景图片 */
+.mainpanel {
+    background-image: url(./fog.jpg);
+    background-size: cover;
+    background-position: center 0;
+    background-repeat: no-repeat;
+}
