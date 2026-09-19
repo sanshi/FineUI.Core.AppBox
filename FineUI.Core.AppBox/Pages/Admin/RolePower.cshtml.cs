@@ -78,7 +78,7 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
             var roleID = Convert.ToInt32(Grid1.SelectedRowID);
 
-            // Client side GroupBy is not supported.
+            // 客户端不支持 GroupBy。
             // https://stackoverflow.com/questions/58138556/client-side-groupby-is-not-supported
             // https://stackoverflow.com/questions/60432078/asp-net-core-web-api-client-side-groupby-is-not-supported
             var powers = (await DB.Powers.ToListAsync()).GroupBy(p => p.GroupName);

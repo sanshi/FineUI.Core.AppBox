@@ -29,7 +29,6 @@ namespace FineUI.Core.AppBox
             base.OnModelCreating(modelBuilder);
 
             // https://docs.microsoft.com/en-us/ef/core/modeling/relationships
-            // Many-to-many relationships without an entity class to represent the join table are not yet supported.
             // 多对多：不支持没有实体类来表示联接表的多对多关系。
             //modelBuilder.Entity<RoleUser>()
             //    .ToTable("RoleUsers")

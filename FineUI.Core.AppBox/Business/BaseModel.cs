@@ -63,7 +63,7 @@ namespace FineUI.Core.AppBox
         private DynamicViewData _viewBag;
 
         /// <summary>
-        /// Add ViewBag to PageModel
+        /// 给 PageModel 加 ViewBag
         /// https://forums.asp.net/t/2128012.aspx?Razor+Pages+ViewBag+has+gone+
         /// https://github.com/aspnet/Mvc/issues/6754
         /// </summary>

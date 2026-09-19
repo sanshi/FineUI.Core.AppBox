@@ -43,7 +43,7 @@ namespace FineUI.Core.AppBox
 
 			byte[] saltedPassword = CreateSaltedPassword(saltValue, hashedPwd);
 		
-			// compare the values
+			// 比较两个值
 			return CompareByteArray(dbPwd, saltedPassword);
 
 			
@@ -58,7 +58,7 @@ namespace FineUI.Core.AppBox
 		{
 			byte[] unsaltedPassword = HashString(userPassword);
 
-			//Create a salt value
+			//生成盐值
 			byte[] saltValue = new byte[saltLength];
 			var rng = RandomNumberGenerator.Create();
 			rng.GetBytes(saltValue);
@@ -94,19 +94,19 @@ namespace FineUI.Core.AppBox
 			}
 			return true;
 		}
-		// create a salted password given the salt value
+		// 用给定盐值生成加盐密码
 		private static byte[] CreateSaltedPassword(byte[] saltValue, byte[] unsaltedPassword)
 		{
-			// add the salt to the hash
+			// 把盐拼到哈希后面
 			byte[] rawSalted  = new byte[unsaltedPassword.Length + saltValue.Length]; 
 			unsaltedPassword.CopyTo(rawSalted,0);
 			saltValue.CopyTo(rawSalted,unsaltedPassword.Length);
 			
-			//Create the salted hash			
+			//生成加盐哈希			
 			SHA1 sha1 = SHA1.Create();
 			byte[] saltedPassword = sha1.ComputeHash(rawSalted);
 
-			// add the salt value to the salted hash
+			// 再把盐值拼到加盐哈希后面
 			byte[] dbPassword  = new byte[saltedPassword.Length + saltValue.Length];
 			saltedPassword.CopyTo(dbPassword,0);
 			saltValue.CopyTo(dbPassword,saltedPassword.Length);
