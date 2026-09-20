@@ -4,7 +4,9 @@
 
 **前缀说明**：`[Core]` = 仅 Core 版（FineUI.Core.AppBox）、`[Pro]` = 仅 Pro 版（FineUI.Pro.AppBox）、`[Java]` = 仅 Java 版（FineUI.Java.AppBox），Dapper 仓库专用条目用 `[Core.Dapper]` / `[Pro.Dapper]`。更早的历史条目保留了当年的版本标识（`[EFCore]` / `[Dapper]` / `[Core/Pro]`）。
 
-2009 年至今的历史记录保留原始措辞，仅归并了层次标记。
+**分组说明**：新版本的条目按「新增 / 变更 / 废弃 / 移除 / 修复」五类归组，一条只归一类（看条目的主要动作，不要重复归到多组）；没有条目的分组不写标题。定义与产品发布历史（根目录 `CHANGELOG.md`）保持一致，安全相关条目用 `[安全]` 前缀标注、不单列分组，破坏性变更在条目里写明「不兼容提醒」并给出迁移办法。
+
+2009 年至今的历史记录保留原始措辞，仅归并了层次标记与分组标题。
 
 ## v16.0（2026-09-30）
 
@@ -29,7 +31,7 @@
   - 全局函数 `__customEvent` 仅为兼容既有代码保留，不再推荐使用，请改用 `F.customEvent`。
 - **[Java]** 批量删除和启停操作使用 `hasSelection`、`getSelectedRows`、`F.confirm`、`F.rawHtml` 与 `F.customEvent` 组成清晰的客户端链路。
 
-### 删除
+### 移除
 
 - 删除 Tree 控件已废除的 `MiniModePopWidth` 属性（v16 中该属性已无任何效果，保留会产生编译警告）。
 
