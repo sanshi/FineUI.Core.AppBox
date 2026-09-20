@@ -6,7 +6,6 @@
 		<MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
 		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
 		<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
-		<Version>13.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
