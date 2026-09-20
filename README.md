@@ -1,6 +1,6 @@
 # FineUI.Core.AppBox
 
-FineUI.Core.AppBox 是 FineUI 官方应用系统样板。本仓库是该项目的唯一真相源，欢迎通过 Issue 和 Pull Request 参与技术讨论与改进。
+FineUI.Core.AppBox 是 FineUI 官方应用系统样板，一个基于 FineUI.Core（社区版）的通用权限管理框架，包含用户、职称、部门、角色与角色权限管理等模块。本仓库是该项目的唯一真相源，欢迎通过 Issue 和 Pull Request 参与技术讨论与改进。
 
 ## 依赖方式
 
@@ -29,33 +29,9 @@ dotnet run --project FineUI.Core.AppBox/FineUI.Core.AppBox.csproj
 
 端口被占用时，改 `Properties/launchSettings.json` 里对应配置的 `applicationUrl` 即可。
 
+数据库用 Entity Framework Core 的 Code First 模式，表结构在第一次运行时自动创建；连接串取自 `appsettings.json` 的 `ConnectionStrings:SQLServer`（`Startup.cs` 里的 `options.UseSqlServer(...)`）。默认管理员账号是 `admin`，密码 `admin`。
+
 **不需要授权文件**：本仓库引用的是公共 NuGet 包 `FineUI.Core`（社区版），社区版不做授权校验，克隆下来就能直接跑。
-
-## 项目说明
-
-FineUI.Core.AppBox 是基于 FineUI.Core（社区版） 的通用权限管理框架，包括用户管理、职称管理、部门管理、角色管理、角色权限管理等模块。
-
-更新下载：https://fineui.com/fans/
-
-### 注意
-
-1. FineUI.Core.AppBox作为演示程序，请不要直接用于真实项目。
-2. FineUI.Core.AppBox作为演示程序，版本之间不兼容，也不支持版本升级。
-
-### 使用步骤
-
-1. 用 VS2022 打开项目工程文件（FineUI.Core.AppBox.sln）；
-2. 打开 appsettings.json，配属数据库连接字符串（ConnectionStrings->SQLServer）；
-  - 在 Startup.cs 代码中使用 options.UseSqlServer(Configuration.GetConnectionString("SQLServer")))
-3. 运行（Ctrl+F5）！
-
-4. 请使用管理员账号登陆网站（用户名：admin 密码：admin）。
-
-### 知识储备
-
-1. 本项目采用Entity Framework Core的Code First开发模式，数据库会在网站第一次运行时自动创建。
-2. 如果对Entity Framework Core不熟悉，请事先学习微软官方文档：https://learn.microsoft.com/en-us/ef/core/
-3. 如果尚未安装.Net 8.0，请先安装 SDK：https://dotnet.microsoft.com/download
 
 ## 发布历史
 
