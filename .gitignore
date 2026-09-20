@@ -22,6 +22,7 @@
 # FineUI 本地源码覆盖
 Directory.Build.local.props
 .local/
+*.local.sln
 NuGet.Config
 
 # FineUI 公共仓库本地文件
@@ -42,5 +43,6 @@ target/
 Directory.Build.local.props
 NuGet.Config
 .local/
+*.local.sln
 FineUI*.lic*.config
 FineUI.Enterprise.props
