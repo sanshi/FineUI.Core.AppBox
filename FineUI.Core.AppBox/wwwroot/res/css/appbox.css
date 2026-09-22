@@ -1,0 +1,34 @@
+/* AppBox 专属样式：只同步到 5 个 AppBox 仓库，不进 Examples / EmptyProject / QuickStart。
+   放进真相源（tools/public-res）是为了 5 个 AppBox 共用一份、不再各自手工维护；
+   index.css 保持"所有示例项目共用"的定位，AppBox 独有的东西一律写在这里。
+
+   加载顺序：index.css → appbox.css，后者在同名选择器上可以覆盖前者。 */
+
+/* 顶部横条上的「模块按钮」（邮件收发 / 短信收发 / 系统管理 这类图标+文字的按钮）。
+   Examples 的顶栏是搜索框 + 主题仓库 + 用户头像，没有这种按钮，所以样式放这里而不是 index.css。 */
+#header .icontopaction {
+    border-radius: 24px;
+    padding-left: 14px;
+    padding-right: 14px;
+}
+
+    #header .icontopaction .f-btn-icon {
+        width: 18px;
+        font-size: 18px;
+        line-height: 18px;
+        height: 18px;
+    }
+
+    #header .icontopaction .f-btn-text {
+        font-size: 12px;
+        line-height: 16px;
+        margin-top: 4px;
+    }
+
+/* 微型模式（侧栏折叠）下树节点的文字：框架默认只给了 font-size: 12px，
+   AppBox 的菜单项文字较长，需要换行显示并和图标拉开一点间距。 */
+.sidebarregion .f-tree-minimode-list .f-tree-minimode-text {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85em;
+}

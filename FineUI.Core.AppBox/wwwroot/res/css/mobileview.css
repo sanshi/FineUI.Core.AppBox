@@ -1,6 +1,6 @@
-﻿body.mobileview .mainpanel {
-    transform: translate3d(-260px,0,0);
-    -webkit-transform: translate3d(-260px,0,0);
+body.mobileview .mainpanel {
+    transform: translate3d(calc(-1 * var(--sidebar-width)),0,0);
+    -webkit-transform: translate3d(calc(-1 * var(--sidebar-width)),0,0);
 }
 
     body.mobileview .mainpanel.showsidebar {

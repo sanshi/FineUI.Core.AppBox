@@ -1,33 +1,73 @@
-﻿
-
-#sideheader {
-    height: 58px;
-    text-align: center;
-    overflow: hidden;
+body.f-body {
+    padding: 0 !important;
 }
 
+/* 左上角产品图标的旋转动画 */
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* 左上角：第一行产品名（折叠后只剩前面的旋转图标），第二行项目身份。
+   两行堆叠靠 flex-wrap + 副标题 flex-basis:100% 实现，不改任何页面的 DOM 结构。
+   align-content 让两行整体垂直居中——只写 align-items 在换行容器里管的是行内对齐、不是行与行之间。 */
+#sideheader {
+    height: 58px;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    column-gap: 5px;
+}
+
+    /* 页面里的内联 SVG 带 width="512" height="512" 两个属性，只覆盖 width 的话高度仍是 512px——
+       靠外层 overflow:hidden 裁成一个 30px 的切片，单行 flex 布局下看着"正常"，一旦换行就把整块撑爆。
+       所以宽高都要钉死。 */
+    #sideheader .logo-img svg {
+        width: 30px;
+        height: 30px;
+        animation: rotate 30s linear infinite;
+    }
+
     #sideheader .logo {
-        font-size: 24px;
+        font-size: 28px;
         text-decoration: none;
-        line-height: 58px;
+        line-height: 1.15;
+    }
+
+    /* 副标题在文档流里换到第二行，不再是右上角的绝对定位角标——那样会压在 logo 文字上，
+       而且 #sideheader 没有 position:relative，全靠外层 .f-panel 碰巧当定位祖先才落得住。 */
+    #sideheader .logo-subtitle {
+        flex-basis: 100%;
+        text-align: center;
+        font-size: 14px;
+        line-height: 1.25;
+        opacity: 0.7;
+    }
+
+    /* 折叠后只留旋转图标 */
+    #sideheader.minimode .logo,
+    #sideheader.minimode .logo-subtitle {
+        display: none;
     }
 
 #header {
     height: 58px;
+    display: flex;
+    justify-content: space-between;
 }
 
-    #header .header-left {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: 0;
-    }
-
+    #header .header-left,
     #header .header-right {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        right: 10px;
+        display: flex;
+        align-items: center;
     }
 
     #header .f-btn {
@@ -47,25 +87,6 @@
         }
 
 
-    #header .icontopaction {
-        border-radius: 24px;
-        padding-left: 14px;
-        padding-right: 14px;
-    }
-
-        #header .icontopaction .f-btn-icon {
-            width: 18px;
-            font-size: 18px;
-            line-height: 18px;
-            height: 18px;
-        }
-
-        #header .icontopaction .f-btn-text {
-            font-size: 12px;
-            line-height: 16px;
-            margin-top: 4px;
-        }
-
     #header .userpicaction {
         border-radius: 24px;
         padding: 7px 10px;
@@ -84,16 +105,78 @@
             line-height: 34px;
         }
 
+        #header .userpicaction .f-badge-text {
+            transform: none;
+            top: -5px;
+        }
+
     #header .btn-apply-trial .f-badge {
         top: 15px;
         right: 10px;
     }
 
 
-    #header .header-right > .f-inline-block,
-    #header .header-left > .f-inline-block {
-        vertical-align: top;
+
+
+
+.f-animation #header .searchbox {
+    -webkit-transition: width .3s;
+    transition: width .3s;
+}
+
+#header .searchbox {
+    margin-bottom: 0;
+    padding: 7px;
+}
+
+    #header .searchbox .f-field-textbox {
+        border-width: 0;
+        /*border-bottom-width: 1px;
+        border-radius: 0;*/
+        line-height: 34px;
+        height: 34px;
+        padding: 0 8px;
+        font-size: 14px;
     }
+
+    #header .searchbox.collapsed .f-field-textbox {
+        background-color: transparent;
+        background-image: none;
+        border-bottom-color: transparent;
+        padding: 0;
+        visibility: hidden;
+    }
+
+    #header .searchbox.expanded .f-field-textbox {
+    }
+
+    #header .searchbox .f-field-triggerbox-icons {
+        margin-top: -12px;
+        margin-right: 5px;
+    }
+
+    #header .searchbox .f-field-triggerbox-icon.f-icon {
+        font-size: 18px;
+        line-height: 24px;
+        min-width: 24px;
+        min-height: 24px;
+    }
+
+
+
+.copyright-menutext {
+    cursor: default;
+}
+
+    .copyright-menutext .copyright {
+        text-align: center;
+    }
+
+        .copyright-menutext .copyright .version img {
+            width: 40px;
+            margin: 10px;
+            animation: rotate 30s linear infinite;
+        }
 
 
 
@@ -108,25 +191,154 @@ ul.list {
     }
 
 
-
-/* Special - Index Page */
-.logo-subtitle {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    font-size: 12px;
-    opacity: 0.5;
-    filter: alpha(opacity=50);
+.isnew,
+.iscorp {
+    color: red;
+    font-size: 11px;
+    line-height: 11px;
 }
+
+
+
+
+ul.applytrial {
+    list-style-type: none;
+    margin: 10px 0 0 10px;
+    border-left-width: 1px;
+    border-left-style: dashed;
+    padding-left: 15px;
+}
+
+    ul.applytrial li {
+        padding: 1px 0;
+    }
+
+
+
+/* 特殊样式 */
+.online-examples-subtitle {
+    line-height: 16px;
+    font-size: 12px;
+    margin-left: 20px;
+    margin-top: -5px;
+    margin-bottom: 5px;
+    opacity: 0.8;
+}
+
+
+/* 面包屑导航 */
+#breadcrumb {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+    #breadcrumb .breadcrumb-separator {
+        margin: 0 8px;
+        opacity: 0.5;
+    }
+
+    #breadcrumb .breadcrumb-text {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    #breadcrumb .breadcrumb-text .text {
+        opacity: 0.65;
+    }
+
+    #breadcrumb .breadcrumb-text.breadcrumb-last .text {
+        opacity: 1;
+    }
+
+    #breadcrumb .breadcrumb-inner,
+    #breadcrumb .breadcrumb-icons,
+    #breadcrumb .breadcrumb-icons .f-iconfont {
+        display: inline-block;
+        line-height: 48px;
+        vertical-align: top;
+    }
+
+        #breadcrumb .breadcrumb-icons a {
+            margin-left: 6px;
+            cursor: pointer;
+            opacity: 0.65;
+        }
+
+
+    #breadcrumb .breadcrumb-icons {
+        display: none;
+    }
+
+.maintabs-single #breadcrumb .breadcrumb-icons {
+    display: inline-block;
+}
+
+/* 单标签页：隐藏主选项卡的标题栏（只留一个复用的选项卡内容 + 顶部面包屑导航） */
+.maintabs-single .centerregion > .f-panel-header {
+    display: none;
+}
+
+
+
+
 
 .leftregion .f-tree-cell-inner {
     cursor: pointer;
 }
 
+.menu-child-count {
+    font-size: 11px;
+    line-height: 11px;
+    opacity: 0.65;
+}
+/* 示例页面标题旁边的版本号 */
+.menu-version {
+    color: #fff;
+    font-size: 11px;
+    line-height: 12px;
+    border-radius: 4px;
+    background-color: rgb(255 0 0 / 80%);
+    padding: 2px;
+}
 
-.sidebarregion .f-tree-minimode-list .f-tree-minimode-text {
-    display: block;
-    margin-top: 5px;
-    font-size: 0.85em;
+/* 左侧树节点的样式调整（标题+示例数）*/
+.sidebarregion .f-tree-cell-text {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+    /* 左侧树节点的样式调整（文本过长显示省略号）*/
+    .sidebarregion .f-tree-cell-text .text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+
+
+.centerregion .f-tab-header .f-panel-title-text .menu-version {
+    display: none;
+}
+
+
+
+/* 微型模式下弹出菜单项文本的样式调整（标题+示例数） */
+.f-tree-minimode-menu .f-menu-item-text {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+/* 隐藏微型模式下顶层节点中的示例数 */
+.sidebarregion .f-tree-minimode-text .menu-child-count {
+    display: none;
+}
+
+
+/* 微型模式下顶级节点的宽度 */
+.sidebarregion .f-tree-minimode-listct {
+    min-width: var(--sidebar-minimode-width);
 }
 

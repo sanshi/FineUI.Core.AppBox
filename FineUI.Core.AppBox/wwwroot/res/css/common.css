@@ -1,4 +1,6 @@
-﻿
+body.f-body {
+    padding: 24px;
+}
 
 .marginr {
     margin-right: 5px;
@@ -32,17 +34,49 @@ table.result {
         font-weight: bold;
     }
 
-    table.result td, table.result th {
+    table.result td,
+    table.result th {
         border-bottom: solid 1px #ddd;
         padding: 5px;
         text-align: left;
     }
+
+.f-theme-darkbg table.result td,
+.f-theme-darkbg table.result th {
+    border-color: #333;
+}
 
 
 .highlight {
     font-weight: bold;
     color: red;
 }
+
+
+
+
+/* 表格列 - 基本信息 */
+.f-grid-cell-text .user-profile {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+    .f-grid-cell-text .user-profile .avatar img {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+    }
+
+    .f-grid-cell-text .user-profile .name-desc {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+        .f-grid-cell-text .user-profile .name-desc .desc {
+            font-size: 0.9em;
+        }
 
 
 

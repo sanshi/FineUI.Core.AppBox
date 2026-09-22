@@ -1,4 +1,4 @@
-﻿
+
 function isSmallWindowWidth() {
     var windowWidth = $(window).width();
     return windowWidth < 992;
