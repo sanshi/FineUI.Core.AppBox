@@ -1,6 +1,6 @@
 # FineUI.Core.AppBox 第三方资源说明
 
-第三方组件与资源保留原作者版权并适用各自的许可证；根目录 MIT 许可证不覆盖或改变这些第三方条款。对应文件路径、文件数和 SHA-256 见 `third-party-assets.json`。
+第三方组件与资源保留原作者版权并适用各自的许可证；根目录 MIT 许可证不覆盖或改变这些第三方条款。
 
 ## FamFamFam Silk Icons
 
