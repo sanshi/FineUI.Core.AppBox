@@ -13,48 +13,83 @@ body.f-body {
     }
 }
 
-/* 左上角：第一行产品名（折叠后只剩前面的旋转图标），第二行项目身份。
-   两行堆叠靠 flex-wrap + 副标题 flex-basis:100% 实现，不改任何页面的 DOM 结构。
-   align-content 让两行整体垂直居中——只写 align-items 在换行容器里管的是行内对齐、不是行与行之间。 */
+/* 品牌组合整体居中：图标在左，两行文字在右并左对齐；左右顶栏统一为 58px。 */
 #sideheader {
+    box-sizing: border-box;
     height: 58px;
+    padding: 0 16px;
     overflow: hidden;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
-    align-content: center;
-    column-gap: 5px;
 }
 
-    /* 页面里的内联 SVG 带 width="512" height="512" 两个属性，只覆盖 width 的话高度仍是 512px——
-       靠外层 overflow:hidden 裁成一个 30px 的切片，单行 flex 布局下看着"正常"，一旦换行就把整块撑爆。
-       所以宽高都要钉死。 */
+    /* 链接只包住品牌组合；Logo、主副标题共享点击区域和键盘焦点。 */
+    #sideheader .brand-link {
+        display: flex;
+        align-items: center;
+        column-gap: 12px;
+        max-width: 100%;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    #sideheader .brand-link:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 3px;
+        border-radius: 2px;
+    }
+
+    #sideheader .logo-img {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 30px;
+    }
+
+    /* 内联 SVG 自带宽高属性，两者都必须覆盖，避免高度撑开布局。 */
     #sideheader .logo-img svg {
+        display: block;
         width: 30px;
         height: 30px;
         animation: rotate 30s linear infinite;
     }
 
-    #sideheader .logo {
-        font-size: 28px;
-        text-decoration: none;
-        line-height: 1.15;
+    #sideheader .logo-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        text-align: left;
     }
 
-    /* 副标题在文档流里换到第二行，不再是右上角的绝对定位角标——那样会压在 logo 文字上，
-       而且 #sideheader 没有 position:relative，全靠外层 .f-panel 碰巧当定位祖先才落得住。 */
+    #sideheader .logo {
+        font-size: 20px;
+        font-weight: 500;
+        text-decoration: none;
+        line-height: 24px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     #sideheader .logo-subtitle {
-        flex-basis: 100%;
-        text-align: center;
-        font-size: 14px;
-        line-height: 1.25;
-        opacity: 0.7;
+        text-align: left;
+        font-size: 12px;
+        line-height: 16px;
+        opacity: 0.72;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #sideheader.minimode {
+        padding: 0;
     }
 
     /* 折叠后只留旋转图标 */
-    #sideheader.minimode .logo,
-    #sideheader.minimode .logo-subtitle {
+    #sideheader.minimode .logo-text {
         display: none;
     }
 
@@ -341,4 +376,3 @@ ul.applytrial {
 .sidebarregion .f-tree-minimode-listct {
     min-width: var(--sidebar-minimode-width);
 }
-
