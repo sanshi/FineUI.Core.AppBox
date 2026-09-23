@@ -92,31 +92,31 @@
         </div>
         <ul class="main f-widget-content">
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/pure_black.png" alt="Pure Black" data-value="Pure_Black" />
                 </a>
                 <div class="title">Pure Black</div>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/pure_green.png" alt="Pure Green" data-value="Pure_Green" />
                 </a>
                 <div class="title">Pure Green</div>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/pure_blue.png" alt="Pure Blue" data-value="Pure_Blue" />
                 </a>
                 <div class="title">Pure Blue</div>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/pure_purple.png" alt="Pure Purple" data-value="Pure_Purple" />
                 </a>
                 <div class="title">Pure Purple</div>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/pure_orange.png" alt="Pure Orange" data-value="Pure_Orange" />
                 </a>
                 <div class="title">Pure Orange</div>
@@ -127,31 +127,31 @@
         </div>
         <ul class="main f-widget-content">
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/cupertino.png" alt="Cupertino" data-value="Cupertino" />
                 </a>
                 <div class="title">Cupertino</div>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/start.png" alt="Start" data-value="Start" />
                 </a>
                 <div class="title">Start</div>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/dark_hive.png" alt="Dark Hive" data-value="Dark_Hive" />
                 </a>
                 <div class="title">Dark Hive</div>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/flick.png" alt="Flick" data-value="Flick" />
                 </a>
                 <div class="title">Flick</div>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/south_street.png" alt="South Street" data-value="South_Street" />
                 </a>
                 <div class="title">South Street</div>
@@ -165,31 +165,31 @@
         </div>
         <ul class="main f-widget-content">
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/custom_default.png" alt="Custom Default" data-value="custom_default" />
                 </a>
                 <div class="title">Custom Default</div>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/image_green_rain.png" alt="Image Green Rain" data-value="image_green_rain" />
                 </a>
                 <div class="title">Image Green Rain</div>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/image_green_lotus.png" alt="Image Green Lotus" data-value="image_green_lotus" />
                 </a>
                 <div class="title">Image Green Lotus</div>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/image_blue_sky.png" alt="Image Blue Sky" data-value="image_blue_sky" />
                 </a>
                 <div class="title">Image Blue Sky</div>
             </li>
             <li>
-                <a href="javascript:;">
+                <a href="#">
                     <img src="@imagesBaseUrl/image_purple_fog.png" alt="Image Purple Fog" data-value="image_purple_fog" />
                 </a>
                 <div class="title">Image Purple Fog</div>
@@ -215,7 +215,8 @@
                 $(this).addClass('f-state-hover');
             }, function () {
                 $(this).removeClass('f-state-hover');
-            }).click(function () {
+            }).click(function (event) {
+                event.preventDefault();
                 //var imgSrcRegex = /([^\.\/]+)\.png$/.exec(imgSrc);
                 var imgNode = $(this).find('img');
 
