@@ -49,7 +49,11 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
         private async Task LoadDataAsync()
         {
-            Grid1.DataSource = await DB.Menus.OrderBy(m => m.SortIndex).AsNoTracking().ToListAsync();
+            Grid1.DataSource = await DB.Menus
+                .Include(m => m.ViewPower)
+                .OrderBy(m => m.SortIndex)
+                .AsNoTracking()
+                .ToListAsync();
             Grid1.DataBind();
         }
 
