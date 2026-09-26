@@ -6,6 +6,12 @@ FineUI.Core.AppBox 是 FineUI 官方应用系统样板，一个基于 FineUI.Cor
 
 项目文件已声明从公共软件包仓库获取的 NuGet 包 `FineUI.Core`。正常联网构建时，包管理器会自动还原依赖；仓库不包含 FineUI.Core.dll、FineUI.Pro.dll、fineui-java.jar，也不包含 FineUI 框架源码。
 
+## 生成设计时文件
+
+安装 Node.js 后，双击仓库根目录的 `生成并监听设计时文件.bat`。脚本会先为所有 RazorForms 页面生成或更新 `.cshtml.designer.cs`，再持续监听 `.cshtml` 文件的改动；按回车或关闭窗口即可停止。
+
+只检查文件是否需要更新，可在仓库根目录运行 `.\生成并监听设计时文件.bat --check`；只生成一次而不监听，可运行 `node tools/generate-designers.mjs`。
+
 ## 构建
 
 安装 .NET 8 SDK 后，在仓库根目录运行：
