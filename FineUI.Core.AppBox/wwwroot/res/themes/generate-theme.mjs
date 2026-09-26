@@ -1,23 +1,25 @@
 /**
- * FineUI 主题生成脚本
- *
- * 用法：
- *   双击本目录的 generate-theme.bat
- *   或命令行：node generate-theme.mjs [主题名]
- *
- * 输入：本目录下各 {主题名}/theme.config
- * 输出：本目录下各 {主题名}/theme.css
- *
- * 本文件由私有仓的 tools/tasks/generate-theme.mjs 生成，请勿手工修改
- * （改了下次同步会被覆盖）。要加主题就在本目录新建 {主题名}/theme.config，
- * 然后运行 node generate-theme.mjs {主题名}，详见 README.txt。
+ * FineUI 主题生成与监听工具。
+ * 本文件由项目同步脚本生成；更新会覆盖手工修改。
  */
-
 import fs from 'node:fs';
 import path from 'node:path';
+import { createInterface } from 'node:readline';
 import { fileURLToPath } from 'node:url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const themesDir = path.dirname(fileURLToPath(import.meta.url));
+const watchChanges = process.argv.includes('--watch');
+const targetThemes = process.argv.slice(2).filter(argument => argument !== '--watch');
+const colors = { brand: 96, accent: 95, success: 92, update: 93, error: 91, hint: 90, subtitle: 97 };
+// 每个字母使用 5×7 像素；两个方块字符拼成一个近似正方形的像素。
+const logoGlyphs = {
+    F: ['11111', '10000', '10000', '11110', '10000', '10000', '10000'],
+    i: ['00100', '00000', '01100', '00100', '00100', '00100', '01110'],
+    n: ['00000', '00000', '11110', '10001', '10001', '10001', '10001'],
+    e: ['00000', '00000', '01110', '10001', '11111', '10000', '01111'],
+    U: ['10001', '10001', '10001', '10001', '10001', '10001', '01110'],
+    I: ['11111', '00100', '00100', '00100', '00100', '00100', '11111'],
+};
 
 // ============================================================
 // 颜色工具函数
@@ -414,38 +416,173 @@ function processThemeDir(themesDir, themeName) {
     return varCount;
 }
 
-// ============================================================
-// 入口：扫描本目录所有 theme.config 子目录，生成 theme.css
-// ============================================================
-function main() {
-    const themesDir = __dirname;
-    const targetTheme = process.argv[2] || null;
+function paint(message, color, stream = process.stdout) {
+    const useColor = stream.isTTY && !('NO_COLOR' in process.env) && process.env.TERM !== 'dumb';
+    return useColor ? `\u001b[${color}m${message}\u001b[0m` : message;
+}
 
-    console.log('FineUI 主题生成脚本');
-    console.log('==================');
+function printStatus(symbol, title, detail, color, stream = process.stdout) {
+    stream.write(`${paint(`${symbol} ${title}`, color, stream)}  ${detail}\n`);
+}
 
-    const themeDirs = fs.readdirSync(themesDir).filter(name => {
-        if (targetTheme && name !== targetTheme) return false;
-        const configPath = path.join(themesDir, name, 'theme.config');
-        return fs.existsSync(configPath);
-    });
+function printLogo() {
+    if (!process.stdout.isTTY) return;
 
-    if (themeDirs.length === 0) {
-        console.log('未找到任何 theme.config 文件。');
-        if (targetTheme) console.log(`请确认 ${targetTheme}/theme.config 是否存在。`);
-        return;
+    process.stdout.write('\n');
+    if (process.stdout.columns && process.stdout.columns < 76) {
+        process.stdout.write(`  ${paint('◆ FineUI', colors.brand)}\n`);
+    } else {
+        for (let row = 0; row < 7; row += 1) {
+            let line = '  ';
+            for (const [index, letter] of [...'FineUI'].entries()) {
+                const pixels = logoGlyphs[letter][row].replace(/1/g, '██').replace(/0/g, '  ');
+                line += `${paint(pixels, index < 4 ? colors.brand : colors.accent)}  `;
+            }
+            process.stdout.write(`${line}\n`);
+        }
+    }
+    process.stdout.write(`  ${paint('主题生成与监听', colors.subtitle)}\n\n`);
+}
+
+function isThemeDirectory(name) {
+    const directory = path.join(themesDir, name);
+    return fs.existsSync(directory) && fs.statSync(directory).isDirectory();
+}
+
+function themeNames() {
+    const names = fs.readdirSync(themesDir);
+    return names.filter(name =>
+        (targetThemes.length === 0 || name === targetThemes[0]) && isThemeDirectory(name)
+    ).sort();
+}
+
+function generateTheme(name) {
+    const configPath = path.join(themesDir, name, 'theme.config');
+    if (!fs.existsSync(configPath)) return { checked: 0, created: 0, updated: 0, failed: 0 };
+
+    const outputPath = path.join(themesDir, name, 'theme.css');
+    try {
+        const existed = fs.existsSync(outputPath);
+        const previousCss = existed ? fs.readFileSync(outputPath, 'utf8') : null;
+        const varCount = processThemeDir(themesDir, name);
+        const currentCss = fs.readFileSync(outputPath, 'utf8');
+        if (currentCss !== previousCss) {
+            const action = existed ? '已更新' : '已生成';
+            const symbol = existed ? '~' : '+';
+            const color = existed ? colors.update : colors.success;
+            printStatus(`  ${symbol}`, action, `${name}/theme.css · ${varCount} 个变量`, color);
+        }
+        return {
+            checked: 1,
+            created: existed ? 0 : 1,
+            updated: existed && currentCss !== previousCss ? 1 : 0,
+            failed: 0,
+        };
+    } catch (error) {
+        printStatus('!', '生成失败', `${name}: ${error.message}`, colors.error, process.stderr);
+        return { checked: 1, created: 0, updated: 0, failed: 1 };
+    }
+}
+
+function generateAll() {
+    const totals = { checked: 0, created: 0, updated: 0, failed: 0 };
+    printStatus('◆', '扫描主题', '正在查找 theme.config…', colors.brand);
+
+    for (const name of themeNames()) {
+        const result = generateTheme(name);
+        for (const key of Object.keys(totals)) totals[key] += result[key];
     }
 
-    for (const themeName of themeDirs) {
-        try {
-            const varCount = processThemeDir(themesDir, themeName);
-            console.log(`  ${themeName}: ${varCount} 个变量`);
-        } catch (err) {
-            console.error(`  ${themeName}: 错误 - ${err.message}`);
+    if (targetThemes.length === 1 && totals.checked === 0) {
+        printStatus('!', '未找到配置', `${targetThemes[0]}/theme.config`, colors.error, process.stderr);
+        totals.failed += 1;
+    }
+
+    printStatus(
+        '★',
+        '检查完成',
+        `${totals.checked} 个主题 · 新建 ${totals.created} 个 · 更新 ${totals.updated} 个 · 失败 ${totals.failed} 个`,
+        totals.failed ? colors.error : colors.success,
+    );
+    return totals;
+}
+
+function startWatching() {
+    const watchers = new Map();
+    const timers = new Map();
+
+    function scheduleGeneration(name) {
+        clearTimeout(timers.get(name));
+        timers.set(name, setTimeout(() => {
+            timers.delete(name);
+            generateTheme(name);
+        }, 120));
+    }
+
+    function syncWatchers() {
+        const names = new Set(themeNames());
+        for (const [name, watcher] of watchers) {
+            if (!names.has(name)) {
+                watcher.close();
+                watchers.delete(name);
+                clearTimeout(timers.get(name));
+                timers.delete(name);
+            }
+        }
+
+        for (const name of names) {
+            if (watchers.has(name)) continue;
+            try {
+                const watcher = fs.watch(path.join(themesDir, name), (event, filename) => {
+                    if (!filename || filename === 'theme.config' || filename === 'theme-extra.css') {
+                        scheduleGeneration(name);
+                    }
+                });
+                watcher.on('error', error => {
+                    printStatus('!', '监听失败', `${name}: ${error.message}`, colors.error, process.stderr);
+                });
+                watchers.set(name, watcher);
+                if (fs.existsSync(path.join(themesDir, name, 'theme.config'))) {
+                    scheduleGeneration(name);
+                }
+            } catch (error) {
+                printStatus('!', '监听失败', `${name}: ${error.message}`, colors.error, process.stderr);
+            }
         }
     }
 
-    console.log('\n完成！');
+    syncWatchers();
+    // 已存在的主题在进入监听前扫描过，取消初次注册时安排的重复生成。
+    for (const timer of timers.values()) clearTimeout(timer);
+    timers.clear();
+
+    const rootWatcher = fs.watch(themesDir, () => syncWatchers());
+    rootWatcher.on('error', error => {
+        printStatus('!', '监听失败', error.message, colors.error, process.stderr);
+    });
+    printStatus('●', '正在监听', 'theme.config 与 theme-extra.css；按回车停止，或直接关闭窗口。', colors.brand);
+
+    const input = createInterface({ input: process.stdin, output: process.stdout });
+    function stop() {
+        rootWatcher.close();
+        for (const watcher of watchers.values()) watcher.close();
+        for (const timer of timers.values()) clearTimeout(timer);
+        input.close();
+        process.stdin.pause();
+        printStatus('○', '已停止监听', '主题文件保持当前状态。', colors.hint);
+        // Windows 的管道输入在 readline 关闭后仍可能占住事件循环。
+        setImmediate(() => process.exit(0));
+    }
+    input.once('line', stop);
+    process.once('SIGINT', stop);
 }
 
-main();
+if (targetThemes.length > 1 || process.argv.slice(2).some(argument => argument.startsWith('--') && argument !== '--watch')) {
+    printStatus('!', '参数错误', '用法：node generate-theme.mjs [--watch] [主题名]', colors.error, process.stderr);
+    process.exitCode = 2;
+} else {
+    printLogo();
+    const result = generateAll();
+    if (watchChanges) startWatching();
+    else if (result.failed) process.exitCode = 1;
+}

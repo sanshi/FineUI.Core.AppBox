@@ -10,9 +10,10 @@ FineUI 自定义主题说明
 
 生成主题
 ---------------------
-  双击 generate-theme.bat                 生成所有主题
-  node generate-theme.mjs                 同上
-  node generate-theme.mjs my_theme        生成指定主题
+  双击 生成并监听主题.bat                 生成所有主题并持续监听改动，按回车停止
+  node generate-theme.mjs                 生成所有主题后退出
+  node generate-theme.mjs my_theme        只生成指定主题后退出
+  node generate-theme.mjs --watch         生成所有主题并监听改动
 
 
 创建新主题
@@ -24,7 +25,7 @@ FineUI 自定义主题说明
 
 3. 可选：创建 theme-extra.css 添加自定义样式（如背景图片）
 
-4. 运行 node generate-theme.mjs my_theme
+4. 双击 生成并监听主题.bat，或运行 node generate-theme.mjs my_theme
 
 5. 完成！
 
