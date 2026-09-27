@@ -10,15 +10,24 @@ import { fileURLToPath } from 'node:url';
 const themesDir = path.dirname(fileURLToPath(import.meta.url));
 const watchChanges = process.argv.includes('--watch');
 const targetThemes = process.argv.slice(2).filter(argument => argument !== '--watch');
-const colors = { brand: 96, accent: 95, success: 92, update: 93, error: 91, hint: 90, subtitle: 97 };
-// 每个字母使用 5×7 像素；两个方块字符拼成一个近似正方形的像素。
-const logoGlyphs = {
-    F: ['11111', '10000', '10000', '11110', '10000', '10000', '10000'],
-    i: ['00100', '00000', '01100', '00100', '00100', '00100', '01110'],
-    n: ['00000', '00000', '11110', '10001', '10001', '10001', '10001'],
-    e: ['00000', '00000', '01110', '10001', '11111', '10000', '01111'],
-    U: ['10001', '10001', '10001', '10001', '10001', '10001', '01110'],
-    I: ['11111', '00100', '00100', '00100', '00100', '00100', '11111'],
+// 字形和配色由打包任务插入，分发后的脚本可独立运行。
+const logo = {"text":"FineUI","primaryLetterCount":4,"primaryColor":"#1890ff","accentColor":"#acd80a","glyphs":{"F":["11111","10000","10000","11110","10000","10000","10000"],"i":["00100","00000","01100","00100","00100","00100","01110"],"n":["00000","00000","11110","10001","10001","10001","10001"],"e":["00000","00000","01110","10001","11111","10000","01111"],"U":["10001","10001","10001","10001","10001","10001","01110"],"CapitalI":["11111","00100","00100","00100","00100","00100","11111"]}};
+
+function hexColorToAnsi(hexColor) {
+    const red = parseInt(hexColor.slice(1, 3), 16);
+    const green = parseInt(hexColor.slice(3, 5), 16);
+    const blue = parseInt(hexColor.slice(5, 7), 16);
+    return `38;2;${red};${green};${blue}`;
+}
+
+const colors = {
+    brand: hexColorToAnsi(logo.primaryColor),
+    accent: hexColorToAnsi(logo.accentColor),
+    success: 92,
+    update: 93,
+    error: 91,
+    hint: 90,
+    subtitle: 97,
 };
 
 // ============================================================
@@ -434,9 +443,10 @@ function printLogo() {
     } else {
         for (let row = 0; row < 7; row += 1) {
             let line = '  ';
-            for (const [index, letter] of [...'FineUI'].entries()) {
-                const pixels = logoGlyphs[letter][row].replace(/1/g, '██').replace(/0/g, '  ');
-                line += `${paint(pixels, index < 4 ? colors.brand : colors.accent)}  `;
+            for (const [index, letter] of [...logo.text].entries()) {
+                const glyphKey = letter === 'I' ? 'CapitalI' : letter;
+                const pixels = logo.glyphs[glyphKey][row].replace(/1/g, '██').replace(/0/g, '  ');
+                line += `${paint(pixels, index < logo.primaryLetterCount ? colors.brand : colors.accent)}  `;
             }
             process.stdout.write(`${line}\n`);
         }

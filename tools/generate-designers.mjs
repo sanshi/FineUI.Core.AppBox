@@ -12,25 +12,24 @@ const ignoredDirectories = new Set(['.git', 'bin', 'obj', 'packages', 'node_modu
 const controlTypeAliases = new Map([
     ['ContentPanel', 'Panel'],
 ]);
+const logo = JSON.parse(readFileSync(new URL('./console-logo.json', import.meta.url), 'utf8'));
+
+function hexColorToAnsi(hexColor) {
+    const red = parseInt(hexColor.slice(1, 3), 16);
+    const green = parseInt(hexColor.slice(3, 5), 16);
+    const blue = parseInt(hexColor.slice(5, 7), 16);
+    return `38;2;${red};${green};${blue}`;
+}
+
 const colors = {
-    brand: 96,
-    accent: 95,
+    brand: hexColorToAnsi(logo.primaryColor),
+    accent: hexColorToAnsi(logo.accentColor),
     success: 92,
     update: 93,
     error: 91,
     hint: 90,
     subtitle: 97,
 };
-// 每个字母使用 5×7 像素，两个方块字符拼成一个近似正方形的像素。
-const logoGlyphs = {
-    F: ['11111', '10000', '10000', '11110', '10000', '10000', '10000'],
-    i: ['00100', '00000', '01100', '00100', '00100', '00100', '01110'],
-    n: ['00000', '00000', '11110', '10001', '10001', '10001', '10001'],
-    e: ['00000', '00000', '01110', '10001', '11111', '10000', '01111'],
-    U: ['10001', '10001', '10001', '10001', '10001', '10001', '01110'],
-    I: ['11111', '00100', '00100', '00100', '00100', '00100', '11111'],
-};
-
 if (checkOnly && watchChanges) {
     throw new Error('--check 和 --watch 不能同时使用。');
 }
@@ -59,11 +58,12 @@ function printLogo() {
     } else {
         for (let row = 0; row < 7; row += 1) {
             let line = '  ';
-            for (const [index, letter] of [...'FineUI'].entries()) {
-                const pixels = logoGlyphs[letter][row]
+            for (const [index, letter] of [...logo.text].entries()) {
+                const glyphKey = letter === 'I' ? 'CapitalI' : letter;
+                const pixels = logo.glyphs[glyphKey][row]
                     .replace(/1/g, '██')
                     .replace(/0/g, '  ');
-                const letterColor = index < 4 ? colors.brand : colors.accent;
+                const letterColor = index < logo.primaryLetterCount ? colors.brand : colors.accent;
                 line += `${paint(pixels, letterColor)}  `;
             }
             process.stdout.write(`${line}\n`);
