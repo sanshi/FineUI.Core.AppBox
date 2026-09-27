@@ -11,7 +11,7 @@ const themesDir = path.dirname(fileURLToPath(import.meta.url));
 const watchChanges = process.argv.includes('--watch');
 const targetThemes = process.argv.slice(2).filter(argument => argument !== '--watch');
 // 字形和配色由打包任务插入，分发后的脚本可独立运行。
-const logo = {"text":"FineUI","primaryLetterCount":4,"primaryColor":"#1890ff","accentColor":"#acd80a","glyphs":{"F":["11111","10000","10000","11110","10000","10000","10000"],"i":["00100","00000","01100","00100","00100","00100","01110"],"n":["00000","00000","11110","10001","10001","10001","10001"],"e":["00000","00000","01110","10001","11111","10000","01111"],"U":["10001","10001","10001","10001","10001","10001","01110"],"CapitalI":["11111","00100","00100","00100","00100","00100","11111"]}};
+const logo = {"text":"FineUI","primaryLetterCount":4,"primaryColor":"#1890ff","accentColor":"#acd80a","glyphs":{"F":["11111","10000","10000","11110","10000","10000","10000"],"i":["010","000","110","010","010","010","111"],"n":["00000","00000","11110","10001","10001","10001","10001"],"e":["00000","00000","01110","10001","11111","10000","01111"],"U":["10001","10001","10001","10001","10001","10001","01110"],"CapitalI":["111","010","010","010","010","010","111"]}};
 
 function hexColorToAnsi(hexColor) {
     const red = parseInt(hexColor.slice(1, 3), 16);
