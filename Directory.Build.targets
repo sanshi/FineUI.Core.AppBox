@@ -1,0 +1,4 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)FineUI.Core.Enterprise.targets"
+          Condition="Exists('$(MSBuildThisFileDirectory)FineUI.Core.Enterprise.targets')" />
+</Project>
