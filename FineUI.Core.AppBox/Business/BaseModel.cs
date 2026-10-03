@@ -122,6 +122,13 @@ namespace FineUI.Core.AppBox
         {
             base.OnPageHandlerExecuting(context);
 
+            if (HttpMethods.IsGet(Request.Method) && context.Result == null)
+            {
+                // 公共偏好先于单页设置；AJAX 回发继续使用恢复后的页面配置。
+                AppPageManagerInitializer.Initialize(PageManager.Instance, Request);
+            }
+
+
             // 如果用户已经登录，更新在线记录
             if (User.Identity.IsAuthenticated)
             {

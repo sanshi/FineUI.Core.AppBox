@@ -1,5 +1,6 @@
 
 using FineUI.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -21,19 +22,19 @@ namespace FineUI.Core.AppBox
         {
             base.OnPageHandlerExecuting(context);
 
-            if(!IsPostBack)
+            if (HttpMethods.IsGet(Request.Method) && context.Result == null)
             {
                 var pmInstance = PageManager.Instance;
 
                 // 当前登录用户名称和角色信息
                 var watermarkText = GetIdentityName();
                 var roleNames = GetIdentityRoleNames(context.HttpContext);
-                if(roleNames.Count > 0)
+                if (roleNames.Count > 0)
                 {
                     watermarkText = $"{roleNames[0]}（{watermarkText}）";
                 }
 
-                // 将当前登录用户名称显式为页面水印
+                // 公共主题初始化之后、单页 OnGet 之前设置管理页的用户水印。
                 pmInstance.EnableWatermark = true;
                 pmInstance.WatermarkFontSize = 16;
                 pmInstance.WatermarkText = watermarkText;

@@ -43,6 +43,20 @@ dotnet run --project FineUI.Core.AppBox/FineUI.Core.AppBox.csproj
 
 各版本的更新内容见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 页面配置
+
+全站默认值放在 `appsettings.json` 的 `FineUI` 节。每用户的主题 Cookie 由应用的 `AppPageManagerInitializer.Initialize(pm, request)` 读取；页面基类在 GET 处理器之前调用它。
+
+单页配置放在页面模型的 `OnGet`（MVC 放在返回视图的 Action），使用 `PageManager.Instance`：
+
+```csharp
+var pm = PageManager.Instance;
+pm.EnableWatermark = true;
+pm.WatermarkText = "I❤︎FineUI";
+```
+
+配置顺序是“全站默认 → 应用公共初始化 → 单页设置 → 渲染视图”。布局保留 `@F.PageManager`、样式与脚本输出；RazorForms 中依赖控件字段的数据绑定仍放在 `Page_Load`。正常 AJAX 回发沿用已有页面状态，不重复读取 Cookie 初始化配置。
+
 ## 许可边界
 
 本仓库中由合肥三生石上软件有限公司拥有著作权的示例或应用项目源代码采用 [MIT 许可证](LICENSE)。FineUI 各端框架源码、二进制软件包、内嵌的 FineUI.js 运行时以及 FineUI 名称、标识和商标不属于 MIT 授权范围，仍适用各自的商业或社区版许可。具体边界见 [NOTICE.md](NOTICE.md)。
