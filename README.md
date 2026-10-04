@@ -8,9 +8,11 @@ FineUI.Core.AppBox 是 FineUI 官方应用系统样板，一个基于 FineUI.Cor
 
 ## 生成设计时文件
 
-安装 Node.js 后，双击仓库根目录的 `生成并监听设计时文件.bat`。脚本会先为所有 RazorForms 页面生成或更新 `.cshtml.designer.cs`，再持续监听 `.cshtml` 文件的改动；按回车或关闭窗口即可停止。
+安装 Node.js 后，双击仓库根目录的 `生成并监听设计时文件.bat`。脚本会先扫描页面，再持续监听 `.cshtml` 与对应后台文件的改动；按回车或关闭窗口即可停止。
 
-只检查文件是否需要更新，可在仓库根目录运行 `.\生成并监听设计时文件.bat --check`；只生成一次而不监听，可运行 `node tools/generate-designers.mjs`。
+只有页面声明了可生成字段的 FineUI 控件时，才会生成 `.cshtml.designer.cs`；没有控件字段的页面无需添加排除标记。工具会清理已不再需要的自动生成文件，保留无法确认来源或包含手写成员的文件。
+
+只检查文件是否需要生成、更新或清理，可在仓库根目录运行 `.\生成并监听设计时文件.bat --check`；只生成一次而不监听，可运行 `node tools/generate-designers.mjs`。
 
 ## 构建
 
