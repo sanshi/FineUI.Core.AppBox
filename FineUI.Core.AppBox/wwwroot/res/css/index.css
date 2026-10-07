@@ -372,7 +372,8 @@ ul.applytrial {
 }
 
 
-/* 微型模式下顶级节点的宽度 */
-.sidebarregion .f-tree-minimode-listct {
-    min-width: var(--sidebar-minimode-width);
+/* 让折叠菜单填满侧栏，例如侧栏为 70px 时，图标不会因菜单只有 60px 而向左偏。
+   固定子菜单时还要给右侧内容留空间，因此不使用此规则。 */
+.sidebarregion .f-tree-minimode:not(.f-tree-minimode-pinned) .f-tree-minimode-listct {
+    flex-grow: 1;
 }
