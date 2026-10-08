@@ -218,7 +218,7 @@
     - 使用同步代码时，可能会出现多个线程被占用而不能执行任何操作的情况，因为它们正在等待 I/O 完成。
     - 使用异步代码时，当线程正在等待 I/O 完成时，服务器可以将其线程释放用于处理其他请求。
   - 将基类的ExecuteUpdate、Sort、SortAndPage、Count、FindByID方法全部改为异步调用。
-  - 增加页面模型基类BaseAdminModel，并设置[Authorize]特性以阻止未登陆用户访问管理页面。
+  - 增加页面模型基类BaseAdminModel，并设置[Authorize]特性以阻止未登录用户访问管理页面。
   - 页面模型类中，将对ViewBag的调用改为类属性。
   - [Dapper]修正在线用户数计算错误的问题（将DB.Execute改为DB.QueryFirstOrDefault）。
   - 更新用户密码页面，设置HiddenField的Name=hfUserID属性，以便在后台通过函数参数获取值。

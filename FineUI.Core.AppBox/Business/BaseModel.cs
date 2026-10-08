@@ -445,7 +445,7 @@ namespace FineUI.Core.AppBox
                 return true;
             }
 
-            // 当前登陆用户的权限列表
+            // 当前登录用户的权限列表
             List<string> rolePowerNames = GetRolePowerNames(context);
             if (rolePowerNames.Contains(powerName))
             {
