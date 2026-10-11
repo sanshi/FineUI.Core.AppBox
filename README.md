@@ -65,6 +65,32 @@ pm.WatermarkText = "I❤︎FineUI";
 
 配置顺序是“全站默认 → 应用公共初始化 → 单页设置 → 渲染视图”。布局保留 `@F.PageManager`、样式与脚本输出；RazorForms 中依赖控件字段的数据绑定仍放在 `Page_Load`。正常 AJAX 回发沿用已有页面状态，不重复读取 Cookie 初始化配置。
 
+## RazorForms 升级与严格 CSP
+
+RazorForms 默认使用 JSON 首屏配置和 JSON 回发，普通控件事件回发到当前完整 URL，保留原查询参数。无需添加新的架构启用属性。MVC、RazorPages 以及明确指定网址的上传、下载、自定义 JSON 入口继续使用各自的调用方式。
+
+升级时一起更新 FineUI.Core 包、DLL 和配套客户端资源，并刷新已经打开的页面。旧页签不能继续使用原脚本响应协议；保存结果未知时先核查业务数据，再决定是否重新提交。回滚也必须同时恢复服务器和客户端资源并刷新页面。
+
+普通策略下，原来的 `RegisterStartupScript(Window1.GetMaximizeReference())` 和字符串消息回调仍兼容。开启严格 CSP 时，这些写法须迁为控件即时辅助方法、`PageContext.Execute`、具名函数或命令回调。例如回发中可调用 `new WindowAjaxHelper(Window1).Maximize()`；消息确认后的动作可以写成：
+
+```csharp
+new Alert
+{
+    Message = "保存成功！",
+    OkCommand = ClientCommand.HideActiveWindowPostBack("saved")
+}.Show();
+```
+
+执行页面函数使用 `PageContext.InvokeFunction("app.afterSave", data)`，参数是 JSON 数据。不要把脚本字符串或 `Get...Reference()` 的返回值当作函数名。首屏初始化用控件声明属性或模板中的具名函数；控件即时辅助方法保留仅在回发生效的边界。
+
+`RendererFunction="renderSalary(2)"` 这样的 JSON 工厂参数可以保留；内联函数、脚本参数、树节点 `OnClientClick`、HTML `onclick` 和 `javascript:` 网址须迁移。可信 Razor 模板内的普通脚本可以使用页面 nonce；通过 `Html.Raw` 或用户内容注入的脚本不能自动获得授权。第三方组件需要放宽策略时应说明具体原因，不能把所有页面都视为严格 CSP 示例。
+
+**不兼容提醒**：AJAX 的 `complete`、`success` 和全局成功钩子仍接收原始响应文本，但 RazorForms 文本已是 JSON。`AuthenticationTimeout` 等通过查找 `window.location.href` 判断跳转的代码必须改为 `JSON.parse(data)` 后检查 `commands` 中的 `page.redirect`，不会提供旧脚本正文模拟。
+
+原来的 `DataSource="@Model.GetRows()"` 首屏绑定表达式可以保留；回发恢复服务器签发的控件声明，不重新运行完整 Razor 模板。动态新增控件的事件应在响应签发声明前登记。自定义派生控件需要另外核查类型化创建与声明恢复。
+
+安装 Node.js 后，在仓库根目录运行 `node tools/check-razorforms-upgrade.mjs`，可定位“协议升级必须核查”“严格 CSP 时迁移”和“人工核查”三类候选；加 `--json` 输出清单。扫描只读源码，不自动重写；原生 `?handler=...` 与 DataSource 是核查项，不能批量删除。
+
 ## 许可边界
 
 本仓库中由合肥三生石上软件有限公司拥有著作权的示例或应用项目源代码采用 [MIT 许可证](LICENSE)。FineUI 各端框架源码、二进制软件包、内嵌的 FineUI.js 运行时以及 FineUI 名称、标识和商标不属于 MIT 授权范围，仍适用各自的商业或社区版许可。具体边界见 [NOTICE.md](NOTICE.md)。

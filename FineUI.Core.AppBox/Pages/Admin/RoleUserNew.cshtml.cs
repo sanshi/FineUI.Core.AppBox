@@ -35,8 +35,12 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
                 if (role == null)
                 {
-                    // 参数错误，首先弹出Alert对话框然后关闭弹出窗口
-                    Alert.Show("参数错误！", String.Empty, ActiveWindow.GetHideReference());
+                    // 参数错误时先显示消息，用户确认后再关闭弹出窗口。
+                    new Alert
+                    {
+                        Message = "参数错误！",
+                        OkCommand = ClientCommand.HideActiveWindow()
+                    }.Show();
                     return;
                 }
 

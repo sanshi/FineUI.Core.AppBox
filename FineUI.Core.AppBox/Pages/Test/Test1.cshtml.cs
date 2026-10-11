@@ -32,7 +32,7 @@ namespace FineUI.Core.AppBox.Pages.Test
             //{
             if (!_isOK)
             {
-                FineUI.Core.PageContext.RegisterStartupScript("F.alert('ok');");
+                Alert.Show("ok");
                 System.Threading.Thread.Sleep(1000);
                 _isOK = true;
             }

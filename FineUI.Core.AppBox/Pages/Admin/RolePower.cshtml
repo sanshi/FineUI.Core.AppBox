@@ -64,12 +64,12 @@
                                 <Items>
                                     <f:Button ID="btnSelectAll" Text="全选">
                                         <Listeners>
-                                            <f:Listener Event="click" Handler="selectPowerCheckboxs(true);"></f:Listener>
+                                            <f:Listener Event="click" Handler="onSelectAllClick"></f:Listener>
                                         </Listeners>
                                     </f:Button>
                                     <f:Button ID="btnUnselectAll" Text="反选">
                                         <Listeners>
-                                            <f:Listener Event="click" Handler="selectPowerCheckboxs(false);"></f:Listener>
+                                            <f:Listener Event="click" Handler="onUnselectAllClick"></f:Listener>
                                         </Listeners>
                                     </f:Button>
                                     <f:ToolbarSeparator></f:ToolbarSeparator>
@@ -96,12 +96,12 @@
         <Items>
             <f:MenuButton ID="menuSelectRows" Text="全选行">
                 <Listeners>
-                    <f:Listener Event="click" Handler="selectPowerCheckboxs(true);"></f:Listener>
+                    <f:Listener Event="click" Handler="onSelectAllClick"></f:Listener>
                 </Listeners>
             </f:MenuButton>
             <f:MenuButton ID="menuUnSelectRows" Text="取消行">
                 <Listeners>
-                    <f:Listener Event="click" Handler="selectPowerCheckboxs(false);"></f:Listener>
+                    <f:Listener Event="click" Handler="onUnselectAllClick"></f:Listener>
                 </Listeners>
             </f:MenuButton>
         </Items>
@@ -140,6 +140,14 @@
 
         function getAllCheckboxEls() {
             return F.ui.Grid2.el.find(checkboxSelector);
+        }
+
+        function onSelectAllClick(event) {
+            selectPowerCheckboxs(true);
+        }
+
+        function onUnselectAllClick(event) {
+            selectPowerCheckboxs(false);
         }
 
         function selectPowerCheckboxs(checked) {

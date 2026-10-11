@@ -70,7 +70,7 @@ namespace FineUI.Core.AppBox.Pages.Admin
             ConfigHelper.HelpList = tbxHelpList.Text.Trim();
             await ConfigHelper.SaveAllAsync();
 
-            RegisterStartupScript("top.window.location.reload(false);");
+            global::FineUI.Core.PageContext.Refresh("_top");
         }
 
         #endregion
