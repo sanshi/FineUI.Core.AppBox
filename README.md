@@ -55,15 +55,17 @@ dotnet run --project FineUI.Core.AppBox/FineUI.Core.AppBox.csproj
 
 全站默认值放在 `appsettings.json` 的 `FineUI` 节。每用户的主题 Cookie 由应用的 `AppPageManagerInitializer.Initialize(pm, request)` 读取；页面基类在 GET 处理器之前调用它。
 
-单页配置放在页面模型的 `OnGet`（MVC 放在返回视图的 Action），使用 `PageManager.Instance`：
+RazorForms 单页的安全策略和开发模式放在每轮都会执行的 Razor 页面开头或公共服务端初始化中，并在第一个控件声明前确定。回发会重跑模板，但不会重跑 `OnGet`，因此不能只在 `OnGet` 设置这些配置：
 
-```csharp
-var pm = PageManager.Instance;
-pm.EnableWatermark = true;
-pm.WatermarkText = "I❤︎FineUI";
+```cshtml
+@{
+    var pm = PageManager.Instance;
+    pm.EnableWatermark = true;
+    pm.WatermarkText = "I❤︎FineUI";
+}
 ```
 
-配置顺序是“全站默认 → 应用公共初始化 → 单页设置 → 渲染视图”。布局保留 `@F.PageManager`、样式与脚本输出；RazorForms 中依赖控件字段的数据绑定仍放在 `Page_Load`。正常 AJAX 回发沿用已有页面状态，不重复读取 Cookie 初始化配置。
+配置顺序是“全站默认 → 应用公共初始化 → 单页设置 → 控件声明”。布局保留 `@F.PageManager`、样式与脚本输出；依赖控件字段的首次数据绑定放在 `Page_Load` 的 `!IsPostBack` 分支。主题 Cookie 初始化只用于 GET；CSP 安全策略、开发模式及当前声明需每轮从服务器取得。
 
 ## RazorForms 升级与严格 CSP
 
@@ -87,7 +89,26 @@ new Alert
 
 **不兼容提醒**：AJAX 的 `complete`、`success` 和全局成功钩子仍接收原始响应文本，但 RazorForms 文本已是 JSON。`AuthenticationTimeout` 等通过查找 `window.location.href` 判断跳转的代码必须改为 `JSON.parse(data)` 后检查 `commands` 中的 `page.redirect`，不会提供旧脚本正文模拟。
 
-原来的 `DataSource="@Model.GetRows()"` 首屏绑定表达式可以保留；回发恢复服务器签发的控件声明，不重新运行完整 Razor 模板。动态新增控件的事件应在响应签发声明前登记。自定义派生控件需要另外核查类型化创建与声明恢复。
+RazorForms 每轮回发真正重跑当前 Razor（含布局与分部模板）取声明，丢弃 HTML，不执行 OnGet 或 Page_Load；随后合并当前值，再运行一次 Page_Load 和可信事件。完整控件/事件声明不在浏览器或整页 Session 中保存。业务实际修改的有限属性与浏览器当前值继续累计，空串、null、false、0、空集合不会被模板初值覆盖。
+
+把首次数据装载从 `DataSource="@Model.GetRows()"` 移到后台：
+
+```csharp
+protected void Page_Load(object sender, EventArgs e)
+{
+    if (!IsPostBack)
+    {
+        Grid1.DataSource = GetRows();
+        Grid1.DataBind();
+    }
+}
+```
+
+未迁移的无副作用查询通常只多执行一次；只在 OnGet 初始化的对象、一次性资源或有副作用的模板表达式可能失败，必须调整。固定选项、页面安全策略等声明每轮从服务器取得；不要覆盖原生绑定已收到的输入模型。动态新增控件在回发 Page_Load 中为已恢复控件重新登记事件，不接受浏览器方法名。当前固定工厂不支持任意自定义派生控件，使用前须核查。
+
+条件/循环影响匿名位置时使用稳定业务 ID。无名或重名的表格命令改变文字、参数后，须使用唯一 CommandName 或在每轮 Page_Load 重设。由数据绑定生成且没有对应模板项的富 HTML Display，以及动态 HTML 数据字段/格式化配置，每轮在服务器重设。普通策略的旧确认/网址表达式可显式放在模板或每轮后台登记，不能作为浏览器当前文字往返。
+
+编辑器工具栏等参数使用 `OptionItem.JsonValue`：`new OptionItem { Key = "toolbar", JsonValue = new JArray { new JArray("bold", "italic") } }`，模板可写 `JsonValue="@Model.ToolbarOptions"`。布尔使用 JValue，显式 JSON null 使用 JValue.CreateNull()。原 Value/PersistOriginal 仍兼容；字符串即使长得像 JSON，也不会自动改成结构化参数。第三方编辑器自身的 CSP 要求须另外核查。
 
 安装 Node.js 后，在仓库根目录运行 `node tools/check-razorforms-upgrade.mjs`，可定位“协议升级必须核查”“严格 CSP 时迁移”和“人工核查”三类候选；加 `--json` 输出清单。扫描只读源码，不自动重写；原生 `?handler=...` 与 DataSource 是核查项，不能批量删除。
 

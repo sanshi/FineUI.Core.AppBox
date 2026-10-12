@@ -57,7 +57,7 @@ const rules = [
     {
         id: 'data-source', category: 'audit',
         pattern: /\bDataSource\s*=\s*["']?@/,
-        message: '原 DataSource 首屏表达式可以保留；核查它只在原首屏路径运行，回发不重跑模板。'
+        message: '回发会重跑模板并再次求值；将首次数据装载移到 Page_Load 的 !IsPostBack 分支，依赖 OnGet 或有副作用的表达式必须迁移。'
     },
     {
         id: 'custom-control', category: 'audit',
@@ -67,7 +67,7 @@ const rules = [
     {
         id: 'conditional-event', category: 'audit',
         pattern: /\b(?:Events|Listeners)\s*\.\s*(?:Add|Clear|Remove)\s*\(/,
-        message: '核查条件与动态事件登记；新增控件的事件必须在响应签发声明前登记，不依赖客户端方法名。'
+        message: '核查条件与动态事件登记；每轮在 Page_Load 为已恢复的动态控件重新登记事件，不依赖客户端方法名。'
     },
     {
         id: 'raw-html-script', category: 'audit',
