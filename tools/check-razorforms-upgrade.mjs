@@ -10,6 +10,11 @@ const ignoredDirectories = new Set([
 const sourceExtensions = new Set(['.cs', '.cshtml', '.js', '.html']);
 const rules = [
     {
+        id: 'page-mode-setting', category: 'protocol',
+        pattern: /\bPageManager\s*\.\s*Instance\s*\.\s*(?:EnableRazorForms|EnableWebForms)\s*=|\bF\s*\.\s*PageManager\s*\.\s*(?:EnableRazorForms|EnableWebForms)\s*\(/,
+        message: 'PageManager 每页模式设置已废弃；全局开启 RF 时，在原生页面的模型类或共同基类上添加 [NoRazorForms]。独立接口无需标记。'
+    },
+    {
         id: 'startup-script', category: 'strict-csp',
         pattern: /\b(?:Register(?:Pre|Post)?StartupScript|AddAjax(?:Absolute)?Script)\s*\(/,
         message: '普通策略保留旧脚本；严格 CSP 改用控件即时方法、PageContext.Execute 或具名函数。'
@@ -42,12 +47,12 @@ const rules = [
     {
         id: 'response-script', category: 'protocol',
         pattern: /(?:data|responseText|response|result)\s*\.(?:indexOf|includes|match|search|startsWith)\s*\(\s*["'][^"']*(?:location|window\.|F\.)/,
-        message: 'RazorForms 响应已是 JSON 文本；按 JSON.parse(data) 的 commands 判断跳转等动作。原脚本正文识别不兼容。'
+        message: 'Core UI 响应已是 JSON 文本；按 JSON.parse(data) 的 commands 判断跳转等动作。原脚本正文识别不兼容。'
     },
     {
         id: 'response-execution', category: 'protocol',
         pattern: /\b(?:eval|Function)\s*\(\s*(?:data|responseText|response|result)\b/,
-        message: '不能继续执行 RazorForms 响应正文；使用新客户端解释 JSON，核查自定义响应接管逻辑。'
+        message: '不能继续执行 Core UI 响应正文；使用新客户端解释 JSON，核查自定义响应接管逻辑。'
     },
     {
         id: 'handler-url', category: 'audit',
@@ -119,12 +124,16 @@ function removeComments(source) {
     return result;
 }
 
-export function inspectUpgradeSource(source, file = '') {
+export function inspectUpgradeSource(source, file = '', mode = 'razorforms') {
     const uncommented = removeComments(source.replace(/^\uFEFF/, ''));
     const findings = [];
     // Razor 属性和 C# 调用可以跨行；例如 Handler="function(event) { 换行后才写正文。
     // 对完整源码匹配，再用命中位置换算原始行号，不能把模板压成一行后报告。
     for (const rule of rules) {
+        if (mode === 'native' && ['data-source', 'conditional-event'].includes(rule.id)) {
+            // 原生模式不重跑模板；标签 DataSource 和宿主处理器属于它原有的业务写法。
+            continue;
+        }
         const pattern = new RegExp(rule.pattern.source, rule.pattern.flags + 'g');
         for (const match of uncommented.matchAll(pattern)) {
             const line = uncommented.slice(0, match.index).split('\n').length;
@@ -135,6 +144,12 @@ export function inspectUpgradeSource(source, file = '') {
     // 按完整起始标签判断，也覆盖属性分多行写的普通 HTML。
     for (const match of uncommented.matchAll(/<([\w:-]+)\b((?:[^<>"']|"[^"]*"|'[^']*')*)>/g)) {
         if (/^f:/i.test(match[1])) {
+            if (/^f:PageManager$/i.test(match[1])
+                && /\b(?:EnableRazorForms|EnableWebForms)\s*=/i.test(match[2])) {
+                const line = uncommented.slice(0, match.index).split('\n').length;
+                findings.push({ file, line, rule: 'page-mode-setting', category: 'protocol',
+                    message: '标签中的页面模式设置已废弃；请在原生页面的模型类或共同基类上添加 [NoRazorForms]。' });
+            }
             continue;
         }
         for (const attribute of match[2].matchAll(/\bon[a-z]+\s*=\s*["']/gi)) {

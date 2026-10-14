@@ -55,7 +55,7 @@ dotnet run --project FineUI.Core.AppBox/FineUI.Core.AppBox.csproj
 
 全站默认值放在 `appsettings.json` 的 `FineUI` 节。每用户的主题 Cookie 由应用的 `AppPageManagerInitializer.Initialize(pm, request)` 读取；页面基类在 GET 处理器之前调用它。
 
-RazorForms 单页的安全策略和开发模式放在每轮都会执行的 Razor 页面开头或公共服务端初始化中，并在第一个控件声明前确定。回发会重跑模板，但不会重跑 `OnGet`，因此不能只在 `OnGet` 设置这些配置：
+RazorForms 单页的安全策略放在每轮都会执行的 Razor 页面开头或公共服务端初始化中，并在第一个控件声明前确定。回发会重跑模板，但不会重跑 `OnGet`，因此不能只在 `OnGet` 设置这些配置：
 
 ```cshtml
 @{
@@ -65,7 +65,7 @@ RazorForms 单页的安全策略和开发模式放在每轮都会执行的 Razor
 }
 ```
 
-配置顺序是“全站默认 → 应用公共初始化 → 单页设置 → 控件声明”。布局保留 `@F.PageManager`、样式与脚本输出；依赖控件字段的首次数据绑定放在 `Page_Load` 的 `!IsPostBack` 分支。主题 Cookie 初始化只用于 GET；CSP 安全策略、开发模式及当前声明需每轮从服务器取得。
+配置顺序是“全站默认 → 应用公共初始化 → 单页设置 → 控件声明”。布局保留 `@F.PageManager`、样式与脚本输出；依赖控件字段的首次数据绑定放在 `Page_Load` 的 `!IsPostBack` 分支。主题 Cookie 初始化只用于 GET；CSP 安全策略及当前声明需每轮从服务器取得。
 
 ## RazorForms 升级与严格 CSP
 
@@ -75,7 +75,7 @@ RazorForms 默认使用 JSON 首屏配置和 JSON 回发，普通控件事件回
 
 升级时一起更新 FineUI.Core 包、DLL 和配套客户端资源，并刷新已经打开的页面。旧页签不能继续使用原脚本响应协议；保存结果未知时先核查业务数据，再决定是否重新提交。回滚也必须同时恢复服务器和客户端资源并刷新页面。
 
-普通策略下，原来的 `RegisterStartupScript(Window1.GetMaximizeReference())` 和字符串消息回调仍兼容。开启严格 CSP 时，这些写法须迁为控件即时辅助方法、`PageContext.Execute`、具名函数或命令回调。例如回发中可调用 `new WindowAjaxHelper(Window1).Maximize()`；消息确认后的动作可以写成：
+普通策略下，原来的 `RegisterStartupScript(Window1.GetMaximizeReference())` 和字符串消息回调仍兼容。开启严格 CSP 时，这些写法须迁为控件即时辅助方法、`PageContext.Execute`、具名函数或命令回调。例如回发中可调用 `Window1.Maximize()`；消息确认后的动作可以写成：
 
 ```csharp
 new Alert
@@ -113,6 +113,16 @@ protected void Page_Load(object sender, EventArgs e)
 编辑器工具栏等参数使用 `OptionItem.JsonValue`：`new OptionItem { Key = "toolbar", JsonValue = new JArray { new JArray("bold", "italic") } }`，模板可写 `JsonValue="@Model.ToolbarOptions"`。布尔使用 JValue，显式 JSON null 使用 JValue.CreateNull()。原 Value/PersistOriginal 仍兼容；字符串即使长得像 JSON，也不会自动改成结构化参数。第三方编辑器自身的 CSP 要求须另外核查。
 
 安装 Node.js 后，在仓库根目录运行 `node tools/check-razorforms-upgrade.mjs`，可定位“协议升级必须核查”“严格 CSP 时迁移”和“人工核查”三类候选；加 `--json` 输出清单。扫描只读源码，不自动重写；原生 `?handler=...` 与 DataSource 是核查项，不能批量删除。
+
+## Core 三种模式的 JSON 与页面模式
+
+RazorForms、MVC 和 RazorPages 共用 JSON 首屏与 UI 响应解释器。MVC/RazorPages 保留 Action、OnPost、参数绑定及 `UIHelper.Result()`，使用无状态子集，不重跑模板，也不上传 RF 控件状态和事件身份字段。请求仍使用 URL 编码表单或 multipart，不要求改成 JSON body；独立业务 JSON 使用明确的数据响应通道。
+
+官方项目显式开启严格内容安全策略（Content Security Policy，CSP）：允许同源脚本与每请求 nonce，禁止 unsafe-inline 和 unsafe-eval。三种模式未显式配置 unsafe-eval 时都默认禁止字符串执行。RazorForms 直接调用已有控件的动作方法，原生模式继续使用 UIHelper；共同操作可调用 `PageContext.InvokeFunction` 或结构化 ClientCommand。
+
+应用级 `EnableRazorForms` 配置保留。全局开启 RF 时，特定原生 FineUI 页面在模型类或共同基类上添加可继承的 `[NoRazorForms]`；PageManager 的旧单页模式属性及对应标签、流式设置已废弃，设置时会报告迁移错误。普通独立上传、下载或 JSON OnPost 接口不要求此标记，不带 RF 专属字段时自然进入宿主处理器。
+
+服务器与客户端资源一起升级，已经打开的旧页签应刷新后使用。首屏不增加数字协议版本，也不发送固定模式标记或签名模式凭据。
 
 ## 许可边界
 
