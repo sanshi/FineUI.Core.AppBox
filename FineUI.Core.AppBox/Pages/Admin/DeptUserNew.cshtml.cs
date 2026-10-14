@@ -39,7 +39,7 @@ namespace FineUI.Core.AppBox.Pages.Admin
                     new Alert
                     {
                         Message = "参数错误！",
-                        OkCommand = ActiveWindow.CreateHideCommand()
+                        OkCommand = ActiveWindow.HideCommand()
                     }.Show();
                     return;
                 }

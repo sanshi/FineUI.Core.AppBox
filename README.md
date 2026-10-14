@@ -81,7 +81,7 @@ RazorForms 默认使用 JSON 首屏配置和 JSON 回发，普通控件事件回
 new Alert
 {
     Message = "保存成功！",
-    OkCommand = ActiveWindow.CreateHidePostBackCommand("saved")
+    OkCommand = ActiveWindow.HidePostBackCommand("saved")
 }.Show();
 ```
 
