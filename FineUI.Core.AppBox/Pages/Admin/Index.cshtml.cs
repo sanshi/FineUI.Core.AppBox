@@ -9,7 +9,7 @@ namespace FineUI.Core.AppBox.Pages.Admin
 {
     public partial class IndexModel : BaseAdminModel
     {
-        public void OnGet()
+        public void Page_Get(object sender, EventArgs e)
         {
 
         }

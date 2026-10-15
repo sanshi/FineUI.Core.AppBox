@@ -21,10 +21,11 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
         #endregion
 
-        #region OnGet
+        #region Page_Get
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task Page_GetAsync(object sender, EventArgs e)
         {
+            int.TryParse(Request.Query["id"], out var id);
             Menu = await DB.Menus
                 .Include(m => m.Parent)
                 .Include(m => m.ViewPower)
@@ -32,10 +33,9 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
             if (Menu == null)
             {
-                return Content("无效参数！");
+                FineUI.Core.PageContext.AbortPage("无效参数！", ActiveWindow.HideCommand());
+                return;
             }
-
-            return Page();
         }
 
         #endregion

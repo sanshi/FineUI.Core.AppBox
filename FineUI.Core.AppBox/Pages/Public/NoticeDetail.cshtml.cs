@@ -21,18 +21,18 @@ namespace FineUI.Core.AppBox.Pages.Public
 
         #endregion
 
-        #region OnGet
+        #region Page_Get
 
-        public IActionResult OnGet(int id)
+        public void Page_Get(object sender, EventArgs e)
         {
+            int.TryParse(Request.Query["id"], out var id);
             Notice = NoticeData.Find(id);
 
             if (Notice == null)
             {
-                return Content("公告不存在或已撤回！");
+                FineUI.Core.PageContext.AbortPage("公告不存在或已撤回！", ActiveWindow.HideCommand());
+                return;
             }
-
-            return Page();
         }
 
         #endregion

@@ -24,10 +24,11 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
         #endregion
 
-        #region OnGet
+        #region Page_Get
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task Page_GetAsync(object sender, EventArgs e)
         {
+            int.TryParse(Request.Query["id"], out var id);
             CurrentUser = await DB.Users
                 .Include(u => u.Dept)
                 .Include(u => u.Roles)
@@ -35,15 +36,15 @@ namespace FineUI.Core.AppBox.Pages.Admin
                 .Where(m => m.ID == id).AsNoTracking().FirstOrDefaultAsync();
             if (CurrentUser == null)
             {
-                return Content("无效参数！");
+                FineUI.Core.PageContext.AbortPage("无效参数！", ActiveWindow.HideCommand());
+                return;
             }
 
             if (CurrentUser.Name == "admin" && GetIdentityName() != "admin")
             {
-                return Content("你无权编辑超级管理员！");
+                FineUI.Core.PageContext.AbortPage("你无权编辑超级管理员！", ActiveWindow.HideCommand());
+                return;
             }
-
-            return Page();
         }
 
 
@@ -140,7 +141,7 @@ namespace FineUI.Core.AppBox.Pages.Admin
                 .Include(u => u.Titles)
                 .Where(m => m.ID == CurrentUser.ID).FirstOrDefaultAsync();
 
-            // 回发带回来的主键是页面上的隐藏字段，可以被篡改，所以要把 OnGet 里的那两道判断原样再做一遍：
+            // 回发带回来的主键是页面上的隐藏字段，可以被篡改，所以要把 Page_Get 里的那两道判断原样再做一遍：
             // 只在打开页面时判过，拥有编辑权限的普通用户改一下隐藏字段就能编辑超级管理员
             if (_user == null)
             {

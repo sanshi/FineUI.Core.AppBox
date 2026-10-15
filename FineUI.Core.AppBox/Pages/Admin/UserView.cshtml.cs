@@ -18,10 +18,11 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
         #endregion
 
-        #region OnGet
+        #region Page_Get
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task Page_GetAsync(object sender, EventArgs e)
         {
+            int.TryParse(Request.Query["id"], out var id);
             CurrentUser = await DB.Users
                 .Include(u => u.Roles)
                 .Include(u => u.Dept)
@@ -30,16 +31,17 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
             if (CurrentUser == null)
             {
-                return Content("无效参数！");
+                FineUI.Core.PageContext.AbortPage("无效参数！", ActiveWindow.HideCommand());
+                return;
             }
 
             if (CurrentUser.Name == "admin" && GetIdentityName() != "admin")
             {
-                return Content("你无权编辑超级管理员！");
+                FineUI.Core.PageContext.AbortPage("你无权编辑超级管理员！", ActiveWindow.HideCommand());
+                return;
             }
 
 
-            return Page();
         }
 
         #endregion

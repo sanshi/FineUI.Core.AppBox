@@ -21,23 +21,24 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
         #endregion
 
-        #region OnGet
+        #region Page_Get
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task Page_GetAsync(object sender, EventArgs e)
         {
+            int.TryParse(Request.Query["id"], out var id);
             CurrentUser = await DB.Users.Where(m => m.ID == id).AsNoTracking().FirstOrDefaultAsync();
 
             if (CurrentUser == null)
             {
-                return Content("无效参数！");
+                FineUI.Core.PageContext.AbortPage("无效参数！", ActiveWindow.HideCommand());
+                return;
             }
 
             if (CurrentUser.Name == "admin" && GetIdentityName() != "admin")
             {
-                return Content("你无权编辑超级管理员！");
+                FineUI.Core.PageContext.AbortPage("你无权编辑超级管理员！", ActiveWindow.HideCommand());
+                return;
             }
-
-            return Page();
         }
 
         #endregion
@@ -58,7 +59,7 @@ namespace FineUI.Core.AppBox.Pages.Admin
         protected async Task btnSaveClose_ClickAsync(object sender, EventArgs e)
         {
             // 回发带回来的主键是页面上的隐藏字段，可以被篡改，所以这里要重新解析、重新查库，
-            // 并且把 OnGet 里的那道判断原样再做一遍：只在打开页面时判过，等于没判
+            // 并且把 Page_Get 里的那道判断原样再做一遍：只在打开页面时判过，等于没判
             if (!Int32.TryParse(hfUserID.Text, out int userID))
             {
                 Alert.Show("无效参数！");
