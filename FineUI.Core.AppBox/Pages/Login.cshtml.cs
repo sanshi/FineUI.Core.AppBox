@@ -73,8 +73,8 @@ namespace FineUI.Core.AppBox.Pages
                         // 登录成功
                         await LoginSuccess(user);
 
-                        // 重定向到登录后首页
-                        Response.Redirect("/Index");
+                        // 登录回发返回跳转命令，让浏览器带着新会话打开首页。
+                        FineUI.Core.PageContext.Redirect("/Index");
                     }
                 }
                 else

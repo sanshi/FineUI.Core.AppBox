@@ -188,7 +188,8 @@ namespace FineUI.Core.AppBox.Pages
             await HttpContext.SignOutAsync();
             HttpContext.Session.Clear();
 
-            Response.Redirect("/Login");
+            // 退出登录的回发返回跳转命令，让浏览器重新打开登录页。
+            FineUI.Core.PageContext.Redirect("/Login");
         }
 
 
