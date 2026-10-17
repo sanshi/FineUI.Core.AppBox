@@ -73,8 +73,12 @@ namespace FineUI.Core.AppBox.Pages
                         // 登录成功
                         await LoginSuccess(user);
 
-                        // 登录回发返回跳转命令，让浏览器带着新会话打开首页。
-                        FineUI.Core.PageContext.Redirect("/Index");
+                        // 从受保护页面跳到登录页时，身份验证组件会把原页面地址写入响应的跳转头。
+                        // 例如访问 /Admin/Role 后登录，应只跳回该页；普通登录才打开首页。
+                        if (Response.StatusCode != StatusCodes.Status302Found)
+                        {
+                            FineUI.Core.PageContext.Redirect("/Index");
+                        }
                     }
                 }
                 else
