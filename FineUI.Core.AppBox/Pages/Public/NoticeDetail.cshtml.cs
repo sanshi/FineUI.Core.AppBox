@@ -21,9 +21,9 @@ namespace FineUI.Core.AppBox.Pages.Public
 
         #endregion
 
-        #region Page_Get
+        #region Page_Init
 
-        public void Page_Get(object sender, EventArgs e)
+        public void Page_Init(object sender, EventArgs e)
         {
             int.TryParse(Request.Query["id"], out var id);
             Notice = NoticeData.Find(id);

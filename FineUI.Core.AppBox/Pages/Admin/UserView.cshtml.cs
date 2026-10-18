@@ -18,9 +18,9 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
         #endregion
 
-        #region Page_Get
+        #region Page_Init
 
-        public async Task Page_GetAsync(object sender, EventArgs e)
+        public async Task Page_InitAsync(object sender, EventArgs e)
         {
             int.TryParse(Request.Query["id"], out var id);
             CurrentUser = await DB.Users

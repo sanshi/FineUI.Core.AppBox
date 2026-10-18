@@ -22,28 +22,35 @@ namespace FineUI.Core.AppBox.Pages.Admin
         [BindProperty]
         public User CurrentUser { get; set; }
 
+        private User _storedUser;
+
         #endregion
 
-        #region Page_Get
+        #region Page_Init
 
-        public async Task Page_GetAsync(object sender, EventArgs e)
+        public async Task Page_InitAsync(object sender, EventArgs e)
         {
             int.TryParse(Request.Query["id"], out var id);
-            CurrentUser = await DB.Users
+            _storedUser = await DB.Users
                 .Include(u => u.Dept)
                 .Include(u => u.Roles)
                 .Include(u => u.Titles)
-                .Where(m => m.ID == id).AsNoTracking().FirstOrDefaultAsync();
-            if (CurrentUser == null)
+                .FirstOrDefaultAsync(user => user.ID == id);
+            if (_storedUser == null)
             {
                 FineUI.Core.PageContext.AbortPage("无效参数！", ActiveWindow.HideCommand());
                 return;
             }
 
-            if (CurrentUser.Name == "admin" && GetIdentityName() != "admin")
+            if (_storedUser.Name == "admin" && GetIdentityName() != "admin")
             {
                 FineUI.Core.PageContext.AbortPage("你无权编辑超级管理员！", ActiveWindow.HideCommand());
                 return;
+            }
+
+            if (!IsPostBack)
+            {
+                CurrentUser = _storedUser;
             }
         }
 
@@ -134,54 +141,34 @@ namespace FineUI.Core.AppBox.Pages.Admin
                 return;
             }
 
-            // 更新部分字段（先从数据库检索用户，再覆盖用户输入值，注意没有更新Name，Password，CreateTime等字段）
-            var _user = await DB.Users
-                .Include(u => u.Dept)
-                .Include(u => u.Roles)
-                .Include(u => u.Titles)
-                .Where(m => m.ID == CurrentUser.ID).FirstOrDefaultAsync();
-
-            // 回发带回来的主键是页面上的隐藏字段，可以被篡改，所以要把 Page_Get 里的那两道判断原样再做一遍：
-            // 只在打开页面时判过，拥有编辑权限的普通用户改一下隐藏字段就能编辑超级管理员
-            if (_user == null)
-            {
-                Alert.Show("无效参数！");
-                return;
-            }
-
-            if (_user.Name == "admin" && GetIdentityName() != "admin")
-            {
-                Alert.Show("你无权编辑超级管理员！");
-                return;
-            }
-
-            _user.ChineseName = CurrentUser.ChineseName;
-            _user.Gender = CurrentUser.Gender;
-            _user.Enabled = CurrentUser.Enabled;
-            _user.Email = CurrentUser.Email;
-            _user.CompanyEmail = CurrentUser.CompanyEmail;
-            _user.OfficePhone = CurrentUser.OfficePhone;
-            _user.OfficePhoneExt = CurrentUser.OfficePhoneExt;
-            _user.HomePhone = CurrentUser.HomePhone;
-            _user.CellPhone = CurrentUser.CellPhone;
-            _user.Remark = CurrentUser.Remark;
+            // 更新 Page_Init 已按当前 URL 查到并校验的实体；表单字段不决定保存目标。
+            _storedUser.ChineseName = CurrentUser.ChineseName;
+            _storedUser.Gender = CurrentUser.Gender;
+            _storedUser.Enabled = CurrentUser.Enabled;
+            _storedUser.Email = CurrentUser.Email;
+            _storedUser.CompanyEmail = CurrentUser.CompanyEmail;
+            _storedUser.OfficePhone = CurrentUser.OfficePhone;
+            _storedUser.OfficePhoneExt = CurrentUser.OfficePhoneExt;
+            _storedUser.HomePhone = CurrentUser.HomePhone;
+            _storedUser.CellPhone = CurrentUser.CellPhone;
+            _storedUser.Remark = CurrentUser.Remark;
 
             // 更新用户所属的角色
             int[] roleIDs = ddbRoles.Values.Select(r => Convert.ToInt32(r)).ToArray();
-            ReplaceEntities<Role>(_user.Roles, roleIDs);
+            ReplaceEntities<Role>(_storedUser.Roles, roleIDs);
 
             // 更新用户拥有的职称
             int[] titleIDs = ddbTitles.Values.Select(r => Convert.ToInt32(r)).ToArray();
-            ReplaceEntities<Title>(_user.Titles, titleIDs);
+            ReplaceEntities<Title>(_storedUser.Titles, titleIDs);
 
             // 如果选择了部门，则更新部门ID，否则设置为null
             if (!String.IsNullOrEmpty(ddbDept.Value))
             {
-                _user.DeptID = Convert.ToInt32(ddbDept.Value);
+                _storedUser.DeptID = Convert.ToInt32(ddbDept.Value);
             }
             else
             {
-                _user.DeptID = null;
+                _storedUser.DeptID = null;
             }
 
             await DB.SaveChangesAsync();

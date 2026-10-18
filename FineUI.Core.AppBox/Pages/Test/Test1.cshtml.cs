@@ -13,7 +13,7 @@ namespace FineUI.Core.AppBox.Pages.Test
         //lock只能锁定一个引用类型变量
         private static object _lock = new object();
 
-        public void Page_Get(object sender, EventArgs e)
+        public void Page_Init(object sender, EventArgs e)
         {
             _isOK = false;
 

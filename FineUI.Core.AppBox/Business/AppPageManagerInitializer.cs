@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 namespace FineUI.Core.AppBox
 {
     /// <summary>
-    /// 首屏公共配置：读取当前用户偏好，页面可以在后台处理方法中进一步覆盖。
+    /// 每次页面请求读取当前用户偏好；本页的 Page_Init 可以随后覆盖这些公共配置。
     /// </summary>
     public static class AppPageManagerInitializer
     {

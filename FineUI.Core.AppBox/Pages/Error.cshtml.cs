@@ -9,20 +9,28 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FineUI.Core.AppBox.Pages
 {
-    public partial class ErrorModel : BaseModel
+    /// <summary>
+    /// 错误页只渲染普通 HTML，不需要创建 FineUI 页面管理器。
+    /// </summary>
+    public partial class ErrorModel : PageModel
     {
+        /// <summary>本次错误的提示文字：默认为空，处理器运行后为“Error”或异常信息。</summary>
+        public string ErrorMessage { get; private set; }
+
+        /// <summary>本次请求的追踪编号：默认为空，处理器运行后从活动记录或 HTTP 请求取得。</summary>
+        public string RequestId { get; private set; }
+
         public void OnGet()
         {
-            ViewBag.ErrorMessage = "Error";
+            ErrorMessage = "Error";
 
             var exception = HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
             if (exception != null)
             {
-                ViewBag.ErrorMessage = exception.Error.Message;
+                ErrorMessage = exception.Error.Message;
             }
 
-            ViewBag.RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-
+            RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier;
         }
     }
 }

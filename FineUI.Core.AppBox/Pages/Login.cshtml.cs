@@ -22,12 +22,12 @@ namespace FineUI.Core.AppBox.Pages
 
         #endregion
 
-        #region Page_Get
+        #region Page_Init
 
-        public void Page_Get(object sender, EventArgs e)
+        public void Page_Init(object sender, EventArgs e)
         {
             // 已登录用户打开登录地址时直接跳到首页，框架随后跳过登录页模板和 Page_Load。
-            if (User.Identity.IsAuthenticated)
+            if (!IsPostBack && User.Identity.IsAuthenticated)
             {
                 Response.Redirect("/");
             }

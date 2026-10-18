@@ -19,21 +19,28 @@ namespace FineUI.Core.AppBox.Pages.Admin
         [BindProperty]
         public Dept Dept { get; set; }
 
+        private Dept _storedDept;
+
         #endregion
 
-        #region Page_Get
+        #region Page_Init
 
-        public async Task Page_GetAsync(object sender, EventArgs e)
+        public async Task Page_InitAsync(object sender, EventArgs e)
         {
             int.TryParse(Request.Query["id"], out var id);
-            Dept = await DB.Depts
+            _storedDept = await DB.Depts
                 .Include(d => d.Parent)
-                .Where(d => d.ID == id).AsNoTracking().FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(d => d.ID == id);
 
-            if (Dept == null)
+            if (_storedDept == null)
             {
                 FineUI.Core.PageContext.AbortPage("无效参数！", ActiveWindow.HideCommand());
                 return;
+            }
+
+            if (!IsPostBack)
+            {
+                Dept = _storedDept;
             }
         }
 
@@ -92,7 +99,7 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
         private bool IsOrChildOfCurrentModel(int deptID)
         {
-            if (deptID == Dept.ID)
+            if (deptID == _storedDept.ID)
             {
                 return true;
             }
@@ -131,19 +138,43 @@ namespace FineUI.Core.AppBox.Pages.Admin
                 return;
             }
 
-            // 设置父部门
+            // 父部门必须存在，且不能把当前部门挂到自己或自己的子部门下面。
+            int? parentId = null;
             if (!String.IsNullOrEmpty(ddbParent.Value))
             {
-                int parentID = Convert.ToInt32(ddbParent.Value);
-                Dept.ParentID = parentID;
+                if (!Int32.TryParse(ddbParent.Value, out var selectedParentId))
+                {
+                    Alert.Show("无效的上级部门！");
+                    return;
+                }
+                parentId = selectedParentId;
             }
-            else
+
+            var visited = new HashSet<int>();
+            int? ancestorId = parentId;
+            while (ancestorId.HasValue)
             {
-                Dept.ParentID = null;
+                if (ancestorId == _storedDept.ID || !visited.Add(ancestorId.Value))
+                {
+                    Alert.Show("不能把当前部门设为自己的下级！");
+                    return;
+                }
+                var ancestor = await DB.Depts
+                    .Where(dept => dept.ID == ancestorId.Value)
+                    .Select(dept => new { dept.ParentID })
+                    .FirstOrDefaultAsync();
+                if (ancestor == null)
+                {
+                    Alert.Show("上级部门不存在！");
+                    return;
+                }
+                ancestorId = ancestor.ParentID;
             }
 
-
-            DB.Entry(Dept).State = EntityState.Modified;
+            _storedDept.Name = Dept.Name;
+            _storedDept.SortIndex = Dept.SortIndex;
+            _storedDept.Remark = Dept.Remark;
+            _storedDept.ParentID = parentId;
             await DB.SaveChangesAsync();
 
             // 关闭本窗体（触发窗体的关闭事件）

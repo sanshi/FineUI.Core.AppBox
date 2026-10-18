@@ -18,20 +18,27 @@ namespace FineUI.Core.AppBox.Pages.Admin
         [BindProperty]
         public Power Power { get; set; }
 
+        private Power _storedPower;
+
         #endregion
 
-        #region Page_Get
+        #region Page_Init
 
-        public async Task Page_GetAsync(object sender, EventArgs e)
+        public async Task Page_InitAsync(object sender, EventArgs e)
         {
             int.TryParse(Request.Query["id"], out var id);
-            Power = await DB.Powers
-                .Where(m => m.ID == id).AsNoTracking().FirstOrDefaultAsync();
+            _storedPower = await DB.Powers
+                .FirstOrDefaultAsync(item => item.ID == id);
 
-            if (Power == null)
+            if (_storedPower == null)
             {
                 FineUI.Core.PageContext.AbortPage("无效参数！", ActiveWindow.HideCommand());
                 return;
+            }
+
+            if (!IsPostBack)
+            {
+                Power = _storedPower;
             }
         }
 
@@ -58,7 +65,11 @@ namespace FineUI.Core.AppBox.Pages.Admin
                 return;
             }
 
-            DB.Entry(Power).State = EntityState.Modified;
+            // 更新 Page_Init 已按当前 URL 校验的实体，表单中的主键不决定保存目标。
+            _storedPower.Name = Power.Name;
+            _storedPower.GroupName = Power.GroupName;
+            _storedPower.Title = Power.Title;
+            _storedPower.Remark = Power.Remark;
             await DB.SaveChangesAsync();
 
             // 权限是按名字判定的，改了名各会话都要重新解析

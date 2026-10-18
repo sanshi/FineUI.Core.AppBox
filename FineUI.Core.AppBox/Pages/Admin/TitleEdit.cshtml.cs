@@ -18,20 +18,27 @@ namespace FineUI.Core.AppBox.Pages.Admin
         [BindProperty]
         public Title Title { get; set; }
 
+        private Title _storedTitle;
+
         #endregion
 
-        #region Page_Get
+        #region Page_Init
 
-        public async Task Page_GetAsync(object sender, EventArgs e)
+        public async Task Page_InitAsync(object sender, EventArgs e)
         {
             int.TryParse(Request.Query["id"], out var id);
-            Title = await DB.Titles
-                .Where(m => m.ID == id).AsNoTracking().FirstOrDefaultAsync();
+            _storedTitle = await DB.Titles
+                .FirstOrDefaultAsync(item => item.ID == id);
 
-            if (Title == null)
+            if (_storedTitle == null)
             {
                 FineUI.Core.PageContext.AbortPage("无效参数！", ActiveWindow.HideCommand());
                 return;
+            }
+
+            if (!IsPostBack)
+            {
+                Title = _storedTitle;
             }
         }
 
@@ -58,7 +65,9 @@ namespace FineUI.Core.AppBox.Pages.Admin
                 return;
             }
 
-            DB.Entry(Title).State = EntityState.Modified;
+            // 更新 Page_Init 已按当前 URL 校验的实体，表单中的主键不决定保存目标。
+            _storedTitle.Name = Title.Name;
+            _storedTitle.Remark = Title.Remark;
             await DB.SaveChangesAsync();
 
             // 关闭本窗体（触发窗体的关闭事件）

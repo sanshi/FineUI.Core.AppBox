@@ -122,12 +122,12 @@ namespace FineUI.Core.AppBox
         {
             base.OnPageHandlerExecuting(context);
 
-            if (HttpMethods.IsGet(Request.Method) && context.Result == null)
+            // 本基类只供 FineUI 页面使用；独立的数据、文件和错误入口继承 PageModel。
+            // 每次请求先应用公共配置，页面 Page_Init 随后可覆盖。
+            if (context.Result == null)
             {
-                // 公共偏好先于单页设置；AJAX 回发继续使用恢复后的页面配置。
                 AppPageManagerInitializer.Initialize(PageManager.Instance, Request);
             }
-
 
             // 如果用户已经登录，更新在线记录
             if (User.Identity.IsAuthenticated)
