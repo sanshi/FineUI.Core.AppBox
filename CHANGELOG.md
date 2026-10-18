@@ -8,6 +8,22 @@
 
 2009 年至今的历史记录保留原始措辞，仅归并了层次标记与分组标题。
 
+## v16.1.0（2026-10-28）
+
+### 变更
+
+- **[Core]**两个 RazorForms AppBox 默认启用严格脚本 CSP：允许同源脚本与每请求 nonce，禁止 `unsafe-inline` 和 `unsafe-eval`。页面动作改用结构化命令与具名函数；从旧版复制的启动脚本和字符串回调需要按新策略迁移。
+- **[Core]**首屏配置与控件回发统一使用 JSON，回发保留当前完整 URL 及查询参数。自行解析旧 JavaScript 响应正文的代码需改为读取 JSON `commands`；升级服务器与客户端资源后刷新旧页签。
+- **[Core/Java]**编辑页在每次请求的 `Page_Init` 中按 URL 加载并校验目标，Core 异步页面使用 `Page_InitAsync`；只有首屏才用数据库值填写表单，回发保留用户输入。记录不存在或无权编辑时中止后续页面处理并显示提示。
+- **[Core] 不兼容提醒**：项目页面基类 `BaseModel` / `BaseAdminModel` 改名为 `PageBase` / `AdminPageBase`。从旧 AppBox 示例继承这些类的页面需同步修改引用；`PageBase` 现继承 FineUI.Core 的 `FineUIPageBase`，可使用 `GetQueryIntValue("id")` 等查询方法。
+- **[Java]**页面中止改用 `PageContext.abortPage(...); return;`，URL 参数改用 `getQueryIntValue("id")` 等方法；页面跳转和具名函数调用由 `PageContext` 登记。原有基类名称 `FineUIPageBase` 不变。
+
+### 修复
+
+- **[安全][Core/Java]**编辑用户、菜单等记录时，保存目标使用本次按 URL 查询并校验的数据库记录，不再信任可修改的表单隐藏主键；已删除记录或权限不满足时，保存事件不会继续执行。
+- **[Core]**已登录用户访问带返回地址的登录页时不再重复跳转。
+- **[Core.Dapper]**菜单列表补取关联的浏览权限名称，新建或修改菜单后可以正确回显该权限。
+
 ## v16.0（2026-09-30）
 
 ### 变更

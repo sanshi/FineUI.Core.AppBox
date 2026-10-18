@@ -53,23 +53,24 @@ dotnet run --project FineUI.Core.AppBox/FineUI.Core.AppBox.csproj
 
 ## 页面配置
 
-全站默认值放在 `appsettings.json` 的 `FineUI` 节。每用户的主题 Cookie 由应用的 `AppPageManagerInitializer.Initialize(pm, request)` 读取；页面基类在 GET 处理器之前调用它。
+`appsettings.json` 的 `FineUI` 节提供全站默认值。项目的 `PageBase` 继承 FineUI.Core 的 `FineUIPageBase`，可直接使用 `IsPostBack` 和 `GetQueryIntValue` 等查询方法。`PageBase.OnPageHandlerExecuting` 在每次 FineUI 页面请求中读取主题 Cookie；管理页的 `AdminPageBase` 随后设置当前用户水印。当前页面可以在 `Page_Init` 中覆盖这些公共配置。
 
-RazorForms 单页的安全策略放在每轮都会执行的 Razor 页面开头或公共服务端初始化中，并在第一个控件声明前确定。回发会重跑模板，但不会重跑 `OnGet`，因此不能只在 `OnGet` 设置这些配置：
+`Page_Init` / `Page_InitAsync` 在首屏和 FineUI 控件回发时都会执行，且早于 Razor 模板和 `Page_Load`。页面自己的 `PageManager` 设置放在这里，每次请求都设置，不加 `!IsPostBack`：
 
-```cshtml
-@{
-    var pm = PageManager.Instance;
-    pm.EnableWatermark = true;
-    pm.WatermarkText = "I❤︎FineUI";
+```csharp
+public void Page_Init(object sender, EventArgs e)
+{
+    PageManager.Instance.AjaxLoadingType = AjaxLoadingType.Mask;
 }
 ```
 
-配置顺序是“全站默认 → 应用公共初始化 → 单页设置 → 控件声明”。布局保留 `@F.PageManager`、样式与脚本输出；依赖控件字段的首次数据绑定放在 `Page_Load` 的 `!IsPostBack` 分支。主题 Cookie 初始化只用于 GET；CSP 安全策略及当前声明需每轮从服务器取得。
+编辑页也在 `Page_InitAsync` 中用 `GetQueryIntValue("id")` 读取当前 URL，查询并校验保存目标；记录不存在或无权访问时调用 `PageContext.AbortPage(...)`，随后 `return`。首屏会显示独立提示页，回发会返回提示命令并跳过后续保存事件。首次填入表单默认值才使用 `if (!IsPostBack)`；回发时保留用户提交的字段。`Page_Load` 在控件创建后执行，适合首次绑定表格以及操作控件实例。
+
+布局继续输出 `@F.PageManager`、样式和脚本。回发会重跑模板获取控件声明，但不会再次执行 `OnGet`；需在模板中读取的页面数据应由 `Page_Init` 提前准备。
 
 ## RazorForms 升级与严格 CSP
 
-本项目默认开启严格脚本 CSP：`CspScripts`、`CspScriptsAllowSelf`、`CspScriptsAllowNonce` 为 `true`，`CspScriptsAllowUnsafeInline`、`CspScriptsAllowUnsafeEval` 为 `false`。可信 Razor 模板脚本由框架添加每请求 nonce；回发动作使用结构化命令或具名函数。Examples 中实际加载第三方 HtmlEditor 的页面通过 `ThirdPartyEditorPageBase` 使用本页例外，打开编辑窗口的外层页面保持严格策略。
+本项目默认开启严格脚本 CSP：`CspScripts`、`CspScriptsAllowSelf`、`CspScriptsAllowNonce` 为 `true`，`CspScriptsAllowUnsafeInline`、`CspScriptsAllowUnsafeEval` 为 `false`。可信 Razor 模板脚本由框架添加每请求 nonce；回发动作使用结构化命令或具名函数。AppBox 普通页面不放宽此策略；若加入依赖字符串执行的第三方组件，需要单独评估该页面的 CSP。
 
 RazorForms 默认使用 JSON 首屏配置和 JSON 回发，普通控件事件回发到当前完整 URL，保留原查询参数。无需添加新的架构启用属性。MVC、RazorPages 以及明确指定网址的上传、下载、自定义 JSON 入口继续使用各自的调用方式。
 
@@ -91,7 +92,7 @@ new Alert
 
 **不兼容提醒**：AJAX 的 `complete`、`success` 和全局成功钩子仍接收原始响应文本，但 RazorForms 文本已是 JSON。`AuthenticationTimeout` 等通过查找 `window.location.href` 判断跳转的代码必须改为 `JSON.parse(data)` 后检查 `commands` 中的 `page.redirect`，不会提供旧脚本正文模拟。
 
-RazorForms 每轮回发真正重跑当前 Razor（含布局与分部模板）取声明，丢弃 HTML，不执行 OnGet 或 Page_Load；随后合并当前值，再运行一次 Page_Load 和可信事件。完整控件/事件声明不在浏览器或整页 Session 中保存。业务实际修改的有限属性与浏览器当前值继续累计，空串、null、false、0、空集合不会被模板初值覆盖。
+RazorForms 回发先运行本次 `Page_Init`，再重跑当前 Razor（含布局与分部模板）取声明并丢弃 HTML；重跑期间不执行 `OnGet` 或 `Page_Load`。合并当前值后，才运行一次 `Page_Load` 和可信事件。完整控件/事件声明不在浏览器或整页 Session 中保存。业务实际修改的有限属性与浏览器当前值继续累计，空串、null、false、0、空集合不会被模板初值覆盖。
 
 把首次数据装载从 `DataSource="@Model.GetRows()"` 移到后台：
 
@@ -106,7 +107,7 @@ protected void Page_Load(object sender, EventArgs e)
 }
 ```
 
-未迁移的无副作用查询通常只多执行一次；只在 OnGet 初始化的对象、一次性资源或有副作用的模板表达式可能失败，必须调整。固定选项、页面安全策略等声明每轮从服务器取得；不要覆盖原生绑定已收到的输入模型。动态新增控件在回发 Page_Load 中为已恢复控件重新登记事件，不接受浏览器方法名。当前固定工厂不支持任意自定义派生控件，使用前须核查。
+模板中的数据表达式会在回发重跑时再次求值；若它依赖只在 `OnGet` 初始化的对象或有副作用的查询，应移到每轮运行的 `Page_Init`，或改为首屏数据绑定。固定选项和页面配置每轮从服务器取得；不要覆盖回发时已绑定的输入模型。动态新增控件在回发 Page_Load 中为已恢复控件重新登记事件，不接受浏览器方法名。当前固定工厂不支持任意自定义派生控件，使用前须核查。
 
 条件/循环影响匿名位置时使用稳定业务 ID。无名或重名的表格命令改变文字、参数后，须使用唯一 CommandName 或在每轮 Page_Load 重设。由数据绑定生成且没有对应模板项的富 HTML Display，以及动态 HTML 数据字段/格式化配置，每轮在服务器重设。普通策略的旧确认/网址表达式可显式放在模板或每轮后台登记，不能作为浏览器当前文字往返。
 
