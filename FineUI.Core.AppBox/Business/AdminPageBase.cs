@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace FineUI.Core.AppBox
 {
     [Authorize]
-    public class BaseAdminModel : BaseModel
+    public class AdminPageBase : PageBase
     {
 
         /// <summary>

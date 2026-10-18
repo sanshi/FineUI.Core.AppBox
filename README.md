@@ -69,7 +69,7 @@ RazorForms 单页的安全策略放在每轮都会执行的 Razor 页面开头�
 
 ## RazorForms 升级与严格 CSP
 
-本项目默认开启严格脚本 CSP：`CspScripts`、`CspScriptsAllowSelf`、`CspScriptsAllowNonce` 为 `true`，`CspScriptsAllowUnsafeInline`、`CspScriptsAllowUnsafeEval` 为 `false`。可信 Razor 模板脚本由框架添加每请求 nonce；回发动作使用结构化命令或具名函数。Examples 中实际加载第三方 HtmlEditor 的页面通过 `BaseThirdPartyEditorModel` 使用本页例外，打开编辑窗口的外层页面保持严格策略。
+本项目默认开启严格脚本 CSP：`CspScripts`、`CspScriptsAllowSelf`、`CspScriptsAllowNonce` 为 `true`，`CspScriptsAllowUnsafeInline`、`CspScriptsAllowUnsafeEval` 为 `false`。可信 Razor 模板脚本由框架添加每请求 nonce；回发动作使用结构化命令或具名函数。Examples 中实际加载第三方 HtmlEditor 的页面通过 `ThirdPartyEditorPageBase` 使用本页例外，打开编辑窗口的外层页面保持严格策略。
 
 RazorForms 默认使用 JSON 首屏配置和 JSON 回发，普通控件事件回发到当前完整 URL，保留原查询参数。无需添加新的架构启用属性。MVC、RazorPages 以及明确指定网址的上传、下载、自定义 JSON 入口继续使用各自的调用方式。
 

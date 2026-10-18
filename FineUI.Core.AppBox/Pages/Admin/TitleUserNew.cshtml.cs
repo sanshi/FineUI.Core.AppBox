@@ -15,7 +15,7 @@ using Newtonsoft.Json.Linq;
 namespace FineUI.Core.AppBox.Pages.Admin
 {
     [CheckPower(Name = "CoreTitleUserNew")]
-    public partial class TitleUserNewModel : BaseAdminModel
+    public partial class TitleUserNewModel : AdminPageBase
     {
         #region Fields
 

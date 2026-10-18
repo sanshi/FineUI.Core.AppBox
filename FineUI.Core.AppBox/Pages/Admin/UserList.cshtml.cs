@@ -16,7 +16,7 @@ using System.Web;
 namespace FineUI.Core.AppBox.Pages.Admin
 {
     [CheckPower(Name = "CoreUserView")]
-    public partial class UserListModel : BaseAdminModel
+    public partial class UserListModel : AdminPageBase
     {
         #region Fields
 

@@ -49,7 +49,7 @@ namespace FineUI.Core.AppBox
             HttpContext httpContext = context.HttpContext;
 
             // 权限验证通过：照常执行页面处理器
-            if (String.IsNullOrEmpty(Name) || BaseModel.CheckPower(httpContext, Name))
+            if (String.IsNullOrEmpty(Name) || PageBase.CheckPower(httpContext, Name))
             {
                 await next.Invoke();
                 return;
@@ -57,14 +57,14 @@ namespace FineUI.Core.AppBox
 
             if (httpContext.Request.Method == "GET")
             {
-                BaseModel.CheckPowerFailWithPage(httpContext);
+                PageBase.CheckPowerFailWithPage(httpContext);
 
                 //http://stackoverflow.com/questions/9837180/how-to-skip-action-execution-from-an-actionfilter
                 context.Result = new EmptyResult();
             }
             else if (httpContext.Request.Method == "POST")
             {
-                BaseModel.CheckPowerFailWithAlert();
+                PageBase.CheckPowerFailWithAlert();
 
                 // https://www.cnblogs.com/sanshi/p/18193981
                 context.Result = UIHelper.Result();

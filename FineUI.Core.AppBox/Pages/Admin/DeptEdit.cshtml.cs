@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace FineUI.Core.AppBox.Pages.Admin
 {
     [CheckPower(Name = "CoreDeptEdit")]
-    public partial class DeptEditModel : BaseAdminModel
+    public partial class DeptEditModel : AdminPageBase
     {
         #region Fields
 

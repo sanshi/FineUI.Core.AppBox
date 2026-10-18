@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 namespace FineUI.Core.AppBox.Pages.Admin
 {
     [CheckPower(Name = "CoreRoleUserView")]
-    public partial class RoleUserModel : BaseAdminModel
+    public partial class RoleUserModel : AdminPageBase
     {
         #region Fields
 

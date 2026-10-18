@@ -13,7 +13,7 @@ using Newtonsoft.Json.Linq;
 namespace FineUI.Core.AppBox.Pages.Admin
 {
     [CheckPower(Name = "CoreDeptView")]
-    public partial class DeptModel : BaseAdminModel
+    public partial class DeptModel : AdminPageBase
     {
         #region Fields
 

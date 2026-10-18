@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace FineUI.Core.AppBox.Pages
 {
-    public partial class LoginModel : BaseModel
+    public partial class LoginModel : PageBase
     {
         #region Fields
 

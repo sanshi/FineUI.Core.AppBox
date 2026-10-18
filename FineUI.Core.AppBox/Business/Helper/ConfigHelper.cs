@@ -27,7 +27,7 @@ namespace FineUI.Core.AppBox
                 {
                     if (_configs == null)
                     {
-                        _configs = BaseModel.GetDbConnection().Configs.ToList();
+                        _configs = PageBase.GetDbConnection().Configs.ToList();
                     }
                 }
                 return _configs;
@@ -76,7 +76,7 @@ namespace FineUI.Core.AppBox
         /// </summary>
         public static async Task SaveAllAsync()
         {
-            var db = BaseModel.GetDbConnection();
+            var db = PageBase.GetDbConnection();
 
             var changedConfigs = db.Configs.Where(c => changedKeys.Contains(c.ConfigKey));
             foreach (var changed in changedConfigs)

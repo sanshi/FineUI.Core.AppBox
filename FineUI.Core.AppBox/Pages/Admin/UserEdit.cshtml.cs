@@ -15,7 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace FineUI.Core.AppBox.Pages.Admin
 {
     [CheckPower(Name = "CoreUserEdit")]
-    public partial class UserEditModel : BaseAdminModel
+    public partial class UserEditModel : AdminPageBase
     {
         #region Fields
         

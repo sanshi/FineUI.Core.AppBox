@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FineUI.Core.AppBox.Pages.Admin
 {
     [CheckPower(Name = "CoreTitleEdit")]
-    public partial class TitleEditModel : BaseAdminModel
+    public partial class TitleEditModel : AdminPageBase
     {
         #region Fields
 

@@ -14,7 +14,7 @@ using System.Transactions;
 namespace FineUI.Core.AppBox.Pages.Admin
 {
     [CheckPower(Name = "CoreUserNew")]
-    public partial class UserNewModel : BaseAdminModel
+    public partial class UserNewModel : AdminPageBase
     {
         #region Fields
 

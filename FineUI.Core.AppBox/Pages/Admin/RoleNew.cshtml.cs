@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FineUI.Core.AppBox.Pages.Admin
 {
     [CheckPower(Name = "CoreRoleNew")]
-    public partial class RoleNewModel : BaseAdminModel
+    public partial class RoleNewModel : AdminPageBase
     {
         #region Fields
 

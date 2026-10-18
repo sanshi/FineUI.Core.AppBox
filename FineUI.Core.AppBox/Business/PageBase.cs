@@ -28,7 +28,7 @@ using Newtonsoft.Json.Linq;
 
 namespace FineUI.Core.AppBox
 {
-    public class BaseModel : PageModel
+    public class PageBase : PageModel
     {
         #region IsPostBack
 
@@ -475,7 +475,7 @@ namespace FineUI.Core.AppBox
                 return cached;
             }
 
-            var db = BaseModel.GetDbConnection();
+            var db = PageBase.GetDbConnection();
 
             List<string> rolePowerNames = new List<string>();
 
@@ -535,7 +535,7 @@ namespace FineUI.Core.AppBox
         {
             List<string> roleNames = new List<string>();
 
-            var db = BaseModel.GetDbConnection();
+            var db = PageBase.GetDbConnection();
 
             if (context.User.Identity.IsAuthenticated)
             {
@@ -668,7 +668,7 @@ namespace FineUI.Core.AppBox
             {
                 if (_db == null)
                 {
-                    _db = BaseModel.GetDbConnection();
+                    _db = PageBase.GetDbConnection();
                 }
                 return _db;
             }

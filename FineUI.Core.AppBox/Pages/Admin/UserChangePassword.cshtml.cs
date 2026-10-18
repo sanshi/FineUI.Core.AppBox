@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FineUI.Core.AppBox.Pages.Admin
 {
     [CheckPower(Name = "CoreUserChangePassword")]
-    public partial class UserChangePasswordModel : BaseAdminModel
+    public partial class UserChangePasswordModel : AdminPageBase
     {
         #region Fields
 

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FineUI.Core.AppBox.Pages.Admin
 {
-    public partial class IndexModel : BaseAdminModel
+    public partial class IndexModel : AdminPageBase
     {
     }
 }

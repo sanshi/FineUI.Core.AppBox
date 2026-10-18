@@ -10,17 +10,17 @@ namespace FineUI.Core.AppBox.Pages.Public
     /// 通知公告：无需登录即可访问的公开页示例。
     ///
     /// 能匿名访问，靠的是本类**没有** [Authorize]：本项目里「要不要登录」由这个特性决定，
-    /// 后台功能页统一继承带 [Authorize] 的 BaseAdminModel，所以直接继承 BaseModel 的页面天然是公开的。
+    /// 后台功能页统一继承带 [Authorize] 的 AdminPageBase，所以直接继承 PageBase 的页面天然是公开的。
     ///
     /// 两件事因此成立：
     ///   1. 本类不标 [CheckPower]——那个特性管的是「登录用户有没有这一页的权限」，与「要不要登录」无关；
-    ///   2. 本类继承 BaseModel 而不是 BaseAdminModel，公开页也就不带当前用户水印。
+    ///   2. 本类继承 PageBase 而不是 AdminPageBase，公开页也就不带当前用户水印。
     ///
     /// 页面里的搜索与翻页都是回发，能正常工作说明匿名会话下的回发通道是通的。
     ///
     /// 读当前用户必须判空：匿名访问时没有身份。本页据此在搜索框右侧显示不同的提示文字。
     /// </summary>
-    public partial class NoticeModel : BaseModel
+    public partial class NoticeModel : PageBase
     {
         #region Fields
 

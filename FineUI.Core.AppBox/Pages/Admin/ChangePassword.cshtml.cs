@@ -13,7 +13,7 @@ using Newtonsoft.Json.Linq;
 
 namespace FineUI.Core.AppBox.Pages.Admin
 {
-    public partial class ChangePasswordModel : BaseAdminModel
+    public partial class ChangePasswordModel : AdminPageBase
     {
         #region Fields
 

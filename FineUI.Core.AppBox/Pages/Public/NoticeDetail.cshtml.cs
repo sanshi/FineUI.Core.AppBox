@@ -13,7 +13,7 @@ namespace FineUI.Core.AppBox.Pages.Public
     ///
     /// 参数取值仍要当作不可信输入：查不到记录就直接输出提示、不渲染页面。
     /// </summary>
-    public partial class NoticeDetailModel : BaseModel
+    public partial class NoticeDetailModel : PageBase
     {
         #region Fields
 

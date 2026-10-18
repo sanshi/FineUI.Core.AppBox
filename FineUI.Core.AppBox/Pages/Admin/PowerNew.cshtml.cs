@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace FineUI.Core.AppBox.Pages.Admin
 {
     [CheckPower(Name = "CorePowerNew")]
-    public partial class PowerNewModel : BaseAdminModel
+    public partial class PowerNewModel : AdminPageBase
     {
         #region Fields
 

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FineUI.Core.AppBox.Pages.Admin
 {
     [CheckPower(Name = "CoreMenuNew")]
-    public partial class MenuNewModel : BaseAdminModel
+    public partial class MenuNewModel : AdminPageBase
     {
         #region Fields
 

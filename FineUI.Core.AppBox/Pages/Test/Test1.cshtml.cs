@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FineUI.Core.AppBox.Pages.Test
 {
-    public partial class Test1Model : BaseModel
+    public partial class Test1Model : PageBase
     {
         private static bool _isOK = false;
 
