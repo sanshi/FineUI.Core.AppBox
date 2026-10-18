@@ -25,7 +25,7 @@ namespace FineUI.Core.AppBox.Pages.Public
 
         public void Page_Init(object sender, EventArgs e)
         {
-            int.TryParse(Request.Query["id"], out var id);
+            var id = GetQueryIntValue("id");
             Notice = NoticeData.Find(id);
 
             if (Notice == null)

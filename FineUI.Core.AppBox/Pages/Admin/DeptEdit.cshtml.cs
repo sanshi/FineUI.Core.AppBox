@@ -27,7 +27,7 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
         public async Task Page_InitAsync(object sender, EventArgs e)
         {
-            int.TryParse(Request.Query["id"], out var id);
+            var id = GetQueryIntValue("id");
             _storedDept = await DB.Depts
                 .Include(d => d.Parent)
                 .FirstOrDefaultAsync(d => d.ID == id);

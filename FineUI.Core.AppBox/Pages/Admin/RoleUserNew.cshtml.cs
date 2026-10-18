@@ -28,7 +28,7 @@ namespace FineUI.Core.AppBox.Pages.Admin
         {
             if (!IsPostBack)
             {
-                var roleID = GetQueryIntValue("roleID");
+                var roleID = GetQueryIntValue("roleID", -1);
 
                 var role = await DB.Roles
                     .Where(t => t.ID == roleID).AsNoTracking().FirstOrDefaultAsync();

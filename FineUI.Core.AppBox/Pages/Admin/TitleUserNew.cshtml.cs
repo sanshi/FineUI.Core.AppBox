@@ -30,7 +30,7 @@ namespace FineUI.Core.AppBox.Pages.Admin
         {
             if (!IsPostBack)
             {
-                var titleID = GetQueryIntValue("titleID");
+                var titleID = GetQueryIntValue("titleID", -1);
 
                 var title = await DB.Titles
                     .Where(t => t.ID == titleID).AsNoTracking().FirstOrDefaultAsync();

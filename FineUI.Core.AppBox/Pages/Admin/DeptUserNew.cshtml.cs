@@ -28,7 +28,7 @@ namespace FineUI.Core.AppBox.Pages.Admin
         {
             if (!IsPostBack)
             {
-                var deptID = GetQueryIntValue("deptID");
+                var deptID = GetQueryIntValue("deptID", -1);
 
                 var dept = await DB.Depts
                     .Where(d => d.ID == deptID).AsNoTracking().FirstOrDefaultAsync();

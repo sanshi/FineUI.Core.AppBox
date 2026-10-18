@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -28,23 +27,8 @@ using Newtonsoft.Json.Linq;
 
 namespace FineUI.Core.AppBox
 {
-    public class PageBase : PageModel
+    public class PageBase : FineUI.Core.FineUIPageBase
     {
-        #region IsPostBack
-
-        /// <summary>
-        /// 是否页面回发
-        /// </summary>
-        public bool IsPostBack
-        {
-            get
-            {
-                return FineUI.Core.PageContext.IsFineUIAjaxPostBack();
-            }
-        }
-
-        #endregion
-
         #region RegisterStartupScript
 
         /// <summary>
@@ -207,34 +191,6 @@ namespace FineUI.Core.AppBox
         public override void OnPageHandlerExecuted(PageHandlerExecutedContext context)
         {
             base.OnPageHandlerExecuted(context);
-        }
-
-        #endregion
-
-        #region 请求参数
-
-        /// <summary>
-        /// 获取查询字符串中的参数值
-        /// </summary>
-        protected string GetQueryValue(string queryKey)
-        {
-            return Request.Query[queryKey].ToString();
-        }
-
-
-        /// <summary>
-        /// 获取查询字符串中的参数值
-        /// </summary>
-        protected int GetQueryIntValue(string queryKey)
-        {
-            int queryIntValue = -1;
-            try
-            {
-                queryIntValue = Convert.ToInt32(Request.Query[queryKey]);
-            }
-            catch (Exception) { }
-
-            return queryIntValue;
         }
 
         #endregion

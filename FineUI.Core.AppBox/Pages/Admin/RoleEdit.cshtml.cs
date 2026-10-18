@@ -26,7 +26,7 @@ namespace FineUI.Core.AppBox.Pages.Admin
 
         public async Task Page_InitAsync(object sender, EventArgs e)
         {
-            int.TryParse(Request.Query["id"], out var id);
+            var id = GetQueryIntValue("id");
             _storedRole = await DB.Roles
                 .FirstOrDefaultAsync(item => item.ID == id);
 
