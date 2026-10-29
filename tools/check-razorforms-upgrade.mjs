@@ -57,12 +57,12 @@ const rules = [
     {
         id: 'handler-url', category: 'audit',
         pattern: /[?&]handler=/i,
-        message: '普通控件事件使用当前完整 URL；显式上传、下载、自定义 JSON 的原生 handler 应保留，勿批量替换。'
+        message: 'v16.1.1 支持控件声明中的本页 Url.Handler/OnPost，按声明地址回发，不自动追加页面查询参数；独立上传、下载、JSON handler 仍使用原生请求，勿批量替换。'
     },
     {
         id: 'data-source', category: 'audit',
         pattern: /\bDataSource\s*=\s*["']?@/,
-        message: '回发会重跑模板并再次求值；将首次数据装载移到 Page_Load 的 !IsPostBack 分支，依赖 OnGet 或有副作用的表达式必须迁移。'
+        message: '回发会重跑模板但不执行 OnGet；v16.1.1 只兜底普通绑定空对象，不恢复动态列表或查询结果。核对声明稳定性和有副作用的 DataSource 表达式，避免每轮重复加载数据。'
     },
     {
         id: 'custom-control', category: 'audit',
