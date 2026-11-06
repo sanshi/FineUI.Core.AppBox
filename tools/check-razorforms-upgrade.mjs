@@ -72,7 +72,7 @@ const rules = [
     {
         id: 'conditional-event', category: 'audit',
         pattern: /\b(?:Events|Listeners)\s*\.\s*(?:Add|Clear|Remove)\s*\(/,
-        message: '核查条件与动态事件登记；每轮在 Page_Load 为已恢复的动态控件重新登记事件，不依赖客户端方法名。'
+        message: '核查本轮条件是否允许该事件或客户端监听器。纯动态控件的后台方法名事件只需在创建时登记，回发按签名核验处理方法；业务主动撤回的事件会被拒绝。'
     },
     {
         id: 'raw-html-script', category: 'audit',
