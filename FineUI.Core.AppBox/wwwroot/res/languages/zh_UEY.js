@@ -72,8 +72,8 @@
 	
 	$.extend(F.ajax,{
 		errorMsg:"خاتالىق كۆرۈلدى！{0} ({1})",
-		timeoutErrorMsg:"ئىلتىماس ۋاقتى ئېشىپ كەتتى، بەتنى يېڭىلاپ قايتىدىن ئىلتىماس قىلىڭ！",
-		networkErrorMsg: "网络错误，请刷新页面并重试！"
+		timeoutErrorMsg:"ئىلتىماس ۋاقتى ئېشىپ كەتتى.",
+		networkErrorMsg: "تورغا ئۇلىنىش مەغلۇپ بولدى."
 	});
 	
 	$.extend(F.util,{
